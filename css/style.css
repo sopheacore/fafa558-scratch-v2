@@ -16,7 +16,7 @@
 html, body {
   width: 100%;
   height: 100%;
-  background: #080303;
+  background: #000000;
   color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   overflow: hidden;
@@ -24,16 +24,9 @@ html, body {
   place-items: center;
 }
 
-/* Ambient Clean Backdrop for Desktop */
+/* Background is strictly inside the container only on full frame PC */
 .backdrop {
-  position: fixed;
-  inset: -10%;
-  width: 120%;
-  height: 120%;
-  z-index: 1;
-  background: center / cover no-repeat url("../images/bg.png");
-  filter: blur(45px) brightness(0.7);
-  pointer-events: none;
+  display: none !important;
 }
 
 /* Mobile Stage: Clean, Luxury Dark Theme */
