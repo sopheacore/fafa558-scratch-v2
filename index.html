@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>FAFA558 - 818理财节 集齐五路财神</title>
+  <link rel="icon" href="images/caishen_avatar_gold.png" type="image/png" />
+
+  <!-- Preload key media -->
+  <link rel="preload" as="image" href="images/scratch_board_tray_pro.png">
+  <link rel="preload" as="image" href="images/stamp_circle_pro.png">
+  <link rel="preload" as="video" href="hero_gods_clean.mp4" type="video/mp4">
+
+  <!-- Meta Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1049062040632358');
+    fbq('init', '1360977495406979');
+    fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1049062040632358&ev=PageView&noscript=1"/>
+    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1360977495406979&ev=PageView&noscript=1"/>
+  </noscript>
+  <!-- End Meta Pixel Code -->
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <!-- Ambient Clean Dark Backdrop for Desktop -->
+  <div class="backdrop" id="desktop-backdrop"></div>
+
+  <!-- Main Mobile Stage (37:80 Aspect Ratio, Clean Luxury Dark Theme) -->
+  <div class="stage" id="stage">
+
+    <!-- Clean Dark Festive Background Poster (No text, No icons) -->
+    <img class="stage-bg-poster" src="images/bg.png" alt="Background" />
+
+    <!-- Top Navigation Header -->
+    <header class="nav-header">
+      <button class="nav-btn" aria-label="Back" onclick="window.history.back()">❮</button>
+      <div class="nav-title">818理财节</div>
+      <button class="nav-btn music-btn" id="music-toggle-btn" aria-label="Toggle Festive Music" title="音乐开关">🎵</button>
+    </header>
+
+    <!-- Animated Hero Gods Section (Preserves authentic waving/floating coin animation) -->
+    <div class="hero-gods-section">
+      <video class="hero-gods-video" id="hero-gods-video" autoplay loop muted playsinline>
+        <source src="hero_gods_clean.mp4" type="video/mp4" />
+      </video>
+    </div>
+
+    <!-- Drifting Gold Coins Animation -->
+    <div class="floating-coins-layer" id="floating-coins-layer"></div>
+
+    <!-- Crisp Clean Gods Progress Banner (集齐五路财神) -->
+    <div class="gods-banner-card">
+      <div class="gods-banner-tag">集齐五路财神</div>
+      <div class="gods-badges-row">
+        <div class="god-badge-slot" id="god-badge-1" title="东路财神">财神</div>
+        <div class="god-badge-slot" id="god-badge-2" title="南路财神">财神</div>
+        <div class="god-badge-slot" id="god-badge-3" title="中路财神">财神</div>
+        <div class="god-badge-slot" id="god-badge-4" title="西路财神">财神</div>
+        <div class="god-badge-slot" id="god-badge-5" title="北路财神">财神</div>
+      </div>
+      <div class="gods-banner-headline">最高中 <span>888</span> 元现金</div>
+    </div>
+
+    <!-- Interactive Scratch Card Board with stage-img container -->
+    <section class="scratch-board-wrapper" aria-label="Scratch Card Board">
+      <img class="scratch-board-bg" src="images/stage-img.png" alt="Scratch Board Background" />
+      <div class="scratch-grid" id="scratch-grid">
+        <!-- 6 Interactive Canvas Scratch Cards populated dynamically by js/scratch.js -->
+      </div>
+    </section>
+
+    <!-- Action Controls (My Prizes, Click Me To Scratch, Welfare Pack) -->
+    <div class="controls-row">
+      <div class="btn-pill btn-prize-pill" id="btn-my-prize" title="我的奖品" role="button">
+        <img src="images/clean_btn_prize.png" alt="我的奖品" />
+      </div>
+
+      <div class="btn-pill btn-scratch-center" id="btn-auto-scratch" title="点我刮开" role="button">
+        <img src="images/clean_btn_scratch.png" alt="点我刮开" />
+        <div class="shimmer-sweep"></div>
+      </div>
+
+      <div class="btn-pill btn-welfare-pill" id="btn-welfare" title="年中福利包" role="button">
+        <img src="images/clean_btn_welfare.png" alt="年中福利包" />
+      </div>
+    </div>
+
+    <!-- Bottom Promotional Card (Clean 3D Event Banner) -->
+    <div class="bottom-promo-card" id="bottom-promo-card" role="button" title="新年利是红包活动">
+      <img src="images/bottom_card_pro.png" alt="新年利是红包活动" />
+    </div>
+
+    <!-- Particle Shavings Container -->
+    <div class="particles-container" id="particles-container"></div>
+
+    <!-- Fullscreen Fireworks Celebration Canvas -->
+    <canvas id="fireworks-canvas"></canvas>
+  </div>
+
+  <!-- Modal 1: Grand Victory Celebration (888 Cash / 5 Gods of Wealth Complete) -->
+  <div class="modal-overlay" id="modal-grand-win">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" aria-label="Close">✕</button>
+      <div class="modal-header-tag">🎊 恭喜大吉大利 🎊</div>
+      <h2 class="modal-title">集齐五路财神！</h2>
+      <p class="modal-desc">鸿运当头，恭喜您斩获现金大奖！</p>
+      
+      <div class="modal-prize-showcase">
+        <img class="modal-prize-icon" src="images/ticket_grand_888_pro.png" alt="现金大奖" />
+        <div class="modal-prize-amount">888 元现金</div>
+      </div>
+
+      <a class="modal-cta-btn" href="#" data-cta-action="Grand Prize 888 Claim">
+        🔥 立即领取 888元 现金
+      </a>
+    </div>
+  </div>
+
+  <!-- Modal 2: My Prizes (我的奖品) -->
+  <div class="modal-overlay" id="modal-my-prizes">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" aria-label="Close">✕</button>
+      <div class="modal-header-tag">🏆 奖品背包</div>
+      <h2 class="modal-title">我的中奖记录</h2>
+      <p class="modal-desc">已刮出的所有超值奖励</p>
+
+      <div class="prizes-list-container" id="prizes-list-content">
+        <!-- Filled dynamically -->
+      </div>
+
+      <a class="modal-cta-btn" href="#" data-cta-action="Redeem All Prizes">
+        ⚡ 立即前往兑换
+      </a>
+    </div>
+  </div>
+
+  <!-- Modal 3: Mid-Year Welfare Pack (年中福利包) -->
+  <div class="modal-overlay" id="modal-welfare">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" aria-label="Close">✕</button>
+      <div class="modal-header-tag">🎁 年中专属特权</div>
+      <h2 class="modal-title">FAFA558 福利包</h2>
+      <p class="modal-desc">限时开户即送，豪礼领不停！</p>
+
+      <div class="modal-prize-showcase">
+        <img class="modal-prize-icon" src="images/ticket_redpacket_pro.png" alt="福利红包" />
+        <div class="modal-prize-amount">188 次免费转 + 100% 存送</div>
+      </div>
+
+      <a class="modal-cta-btn" href="#" data-cta-action="Claim Welfare Pack">
+        🎉 立即抢领福利
+      </a>
+    </div>
+  </div>
+
+  <script src="js/scratch.js"></script>
+</body>
+</html>
