@@ -43,9 +43,7 @@
     <img height="1" width="1" style="display:none"
       src="https://www.facebook.com/tr?id=1360977495406979&ev=PageView&noscript=1" />
   </noscript>
-  <!-- End Meta Pixel Code -->
-
-  <link rel="stylesheet" href="css/style.css?v=25" />
+  <link rel="stylesheet" href="css/style.css?v=43" />
 </head>
 
 <body>
@@ -84,48 +82,86 @@
       </div>
     </section>
 
+    <!-- Action Controls (Center Play Again Button - appears after scratching & popup) -->
+    <div class="controls-row" id="controls-row">
+      <button class="btn-play-again-stage" id="btn-auto-scratch" type="button" title="សាកល្បងលេងម្តងទៀត">
+        <span class="btn-play-again-icon">🔄</span>
+        <span class="btn-play-again-label">សាកល្បងលេងម្តងទៀត</span>
+        <div class="shimmer-sweep"></div>
+      </button>
+    </div>
+
     <!-- Particle Shavings Container -->
     <div class="particles-container" id="particles-container"></div>
 
     <!-- Fullscreen Fireworks Celebration Canvas -->
     <canvas id="fireworks-canvas"></canvas>
-  </div>
 
-  <!-- Modal: Individual Prize Win Celebration (Pops up 1-3s after scratching 10-20%) -->
+    <!-- Modal: Individual Prize Win Celebration (Pops up 1-3s after scratching 10-20%) -->
   <div class="modal-overlay" id="modal-win-gift">
+    <!-- Dynamic Volumetric God-Rays / X-Ray Canvas -->
+    <canvas class="modal-xray-canvas" id="xray-canvas-win-gift"></canvas>
+
+    <!-- Celebration Confetti Shower Canvas -->
+    <canvas class="modal-congrats-canvas" id="congrats-canvas-win-gift"></canvas>
+
     <div class="modal-dialog">
+      <!-- Celebration Floating Sparkle Stars -->
+      <span class="modal-sparkle-star s1" aria-hidden="true">✨</span>
+      <span class="modal-sparkle-star s2" aria-hidden="true">⭐</span>
+      <span class="modal-sparkle-star s3" aria-hidden="true">✨</span>
+      <span class="modal-sparkle-star s4" aria-hidden="true">🌟</span>
+
       <button class="modal-close-btn" aria-label="Close">✕</button>
       <div class="modal-header-tag" id="win-gift-tag">🎉 សូមអបអរសាទរ 🎉</div>
       <h2 class="modal-title" id="win-gift-title">អ្នកបានឈ្នះរង្វាន់!</h2>
       <p class="modal-desc" id="win-gift-desc">សូមចុចទទួលយករង្វាន់របស់អ្នកឥឡូវនេះ</p>
 
       <div class="modal-prize-showcase">
-        <img class="modal-prize-icon" id="win-gift-icon" src="images/ticket_grand_888_pro.png" alt="រង្វាន់" />
-        <div class="modal-prize-amount" id="win-gift-amount">888$</div>
+        <img class="modal-prize-icon" id="win-gift-icon" src="images/ticket_100_grand_pro.png" alt="រង្វាន់" />
+        <div class="modal-prize-amount" id="win-gift-amount">100$</div>
       </div>
 
       <a class="modal-cta-btn" id="win-gift-cta" href="https://t.me/fafa558kh_bot?start=minigame" target="_blank" data-cta-action="Claim Prize">
         🎁 ទទួលយករង្វាន់ឥឡូវនេះ
       </a>
+      <button class="modal-retry-btn" id="win-gift-retry" type="button">
+        🔄 សាកល្បងលេងម្តងទៀត
+      </button>
     </div>
   </div>
 
-  <!-- Modal 1: Grand Victory Celebration (888 Cash / 5 Gods of Wealth Complete) -->
+  <!-- Modal 1: Grand Victory Celebration (100$ Cash / 5 Gods of Wealth Complete) -->
   <div class="modal-overlay" id="modal-grand-win">
+    <!-- Dynamic Volumetric God-Rays / X-Ray Canvas -->
+    <canvas class="modal-xray-canvas" id="xray-canvas-grand-win"></canvas>
+
+    <!-- Celebration Confetti Shower Canvas -->
+    <canvas class="modal-congrats-canvas" id="congrats-canvas-grand-win"></canvas>
+
     <div class="modal-dialog">
+      <!-- Celebration Floating Sparkle Stars -->
+      <span class="modal-sparkle-star s1" aria-hidden="true">✨</span>
+      <span class="modal-sparkle-star s2" aria-hidden="true">⭐</span>
+      <span class="modal-sparkle-star s3" aria-hidden="true">✨</span>
+      <span class="modal-sparkle-star s4" aria-hidden="true">🌟</span>
+
       <button class="modal-close-btn" aria-label="Close">✕</button>
       <div class="modal-header-tag">🎊 សូមអបអរសាទរ 🎊</div>
       <h2 class="modal-title">ប្រមូលបានទេវតាទ្រព្យទាំង៥!</h2>
       <p class="modal-desc">សំណាងល្អហើយ សូមអបអរអ្នកឈ្នះរង្វាន់សាច់ប្រាក់ធំ!</p>
 
       <div class="modal-prize-showcase">
-        <img class="modal-prize-icon" src="images/ticket_grand_888_pro.png" alt="រង្វាន់សាច់ប្រាក់ធំ" />
-        <div class="modal-prize-amount">សាច់ប្រាក់ 888$</div>
+        <img class="modal-prize-icon" src="images/ticket_100_grand_pro.png" alt="រង្វាន់សាច់ប្រាក់ធំ" />
+        <div class="modal-prize-amount">សាច់ប្រាក់ 100$</div>
       </div>
 
-      <a class="modal-cta-btn" href="#" data-cta-action="Grand Prize 888 Claim">
-        🔥 ទទួលយកសាច់ប្រាក់ 888$ ឥឡូវនេះ
+      <a class="modal-cta-btn" href="#" data-cta-action="Grand Prize 100 Claim">
+        🔥 ទទួលយកសាច់ប្រាក់ 100$ ឥឡូវនេះ
       </a>
+      <button class="modal-retry-btn" id="grand-win-retry" type="button">
+        🔄 សាកល្បងលេងម្តងទៀត
+      </button>
     </div>
   </div>
 
@@ -166,7 +202,9 @@
     </div>
   </div>
 
-  <script src="js/scratch.js?v=25"></script>
+  </div> <!-- End Mobile Stage (9:16) -->
+
+  <script src="js/scratch.js?v=43"></script>
 </body>
 
 </html>

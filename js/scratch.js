@@ -10,14 +10,14 @@ const CONFIG = {
   brandName: 'FAFA558'
 };
 
-// 6 Cards Definition with New Professional 3D Assets
+// 6 Cards Definition with Renewed Khmer 3D Gift Assets (50$ and 100$ only)
 const CARD_DATA = [
-  { id: 1, name: 'សំបុត្រមាស 5សន្លឹក', amount: '5សន្លឹក', icon: 'images/ticket_gold_5_pro.png', type: 'gold', godIndex: 1 },
-  { id: 2, name: 'ទេវតាទ្រព្យ+1', amount: 'ទេវតា', icon: 'images/ticket_god_pro.png', type: 'god', godIndex: 2 },
-  { id: 3, name: 'សំបុត្រមាស 10សន្លឹក', amount: '10សន្លឹក', icon: 'images/ticket_gold_10_pro.png', type: 'gold', godIndex: 3 },
-  { id: 4, name: 'ស្រោមក្រហម 88$', amount: '88$', icon: 'images/ticket_redpacket_pro.png', type: 'cash', godIndex: 4 },
-  { id: 5, name: 'ទេវតាទ្រព្យ+1', amount: 'ទេវតា', icon: 'images/ticket_god_pro.png', type: 'god', godIndex: 5 },
-  { id: 6, name: 'រង្វាន់ធំ 888$', amount: '888$', icon: 'images/ticket_grand_888_pro.png', type: 'grand', isGrand: true }
+  { id: 1, name: 'រង្វាន់ 50$', amount: '50$', icon: 'images/ticket_50_gold_pro.png', type: 'gold', godIndex: 1 },
+  { id: 2, name: 'រង្វាន់ 100$', amount: '100$', icon: 'images/ticket_100_grand_pro.png', type: 'grand', isGrand: true, godIndex: 2 },
+  { id: 3, name: 'រង្វាន់ 50$', amount: '50$', icon: 'images/ticket_50_cash_pro.png', type: 'cash', godIndex: 3 },
+  { id: 4, name: 'រង្វាន់ 100$', amount: '100$', icon: 'images/ticket_100_gold_pro.png', type: 'gold', godIndex: 4 },
+  { id: 5, name: 'រង្វាន់ 50$', amount: '50$', icon: 'images/ticket_50_god_pro.png', type: 'god', godIndex: 5 },
+  { id: 6, name: 'រង្វាន់ 100$', amount: '100$', icon: 'images/ticket_100_cash_pro.png', type: 'cash', isGrand: true }
 ];
 
 
@@ -69,11 +69,20 @@ class ScratchGame {
       document.addEventListener('click', () => video.play().catch(() => {}), { once: true });
     }
 
-    // Auto Scratch Button ("点我刮开")
+    // Stage Play Again Button
     const scratchBtn = document.getElementById('btn-auto-scratch');
     if (scratchBtn) {
-      scratchBtn.addEventListener('click', () => this.autoScratchAll());
+      scratchBtn.addEventListener('click', () => {
+        this.resetGame();
+      });
     }
+
+    // Modal Retry / Play Again Buttons
+    document.querySelectorAll('.modal-retry-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.resetGame();
+      });
+    });
 
     // "我的奖品" (My Prizes) Button
     const myPrizeBtn = document.getElementById('btn-my-prize');
@@ -98,13 +107,19 @@ class ScratchGame {
       btn.addEventListener('click', (e) => {
         const modal = e.target.closest('.modal-overlay');
         if (modal) modal.classList.remove('active');
+        this.stopModalCongrats();
+        this.stopModalXRay();
       });
     });
 
     // Close modal when clicking dark backdrop
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
       overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) overlay.classList.remove('active');
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+          this.stopModalCongrats();
+          this.stopModalXRay();
+        }
       });
     });
 
@@ -183,6 +198,24 @@ class ScratchGame {
     let lastPoint = null;
     let strokeCount = 0;
 
+    // Fast, security-safe coverage grid (12x12) to accurately calculate 30-50% scratch area
+    // without ever failing due to CORS / file:/// canvas export restrictions!
+    const GRID_SIZE = 12;
+    const scratchedCells = new Set();
+    const cellRadius = canvas.width / GRID_SIZE;
+    const centerCell = (GRID_SIZE - 1) / 2;
+    const circleRadiusInCells = (GRID_SIZE / 2) - 0.35;
+    let totalValidCircleCells = 0;
+
+    for (let gy = 0; gy < GRID_SIZE; gy++) {
+      for (let gx = 0; gx < GRID_SIZE; gx++) {
+        const d = Math.hypot(gx - centerCell, gy - centerCell);
+        if (d <= circleRadiusInCells) {
+          totalValidCircleCells++;
+        }
+      }
+    }
+
     const getPos = (e) => {
       const b = canvas.getBoundingClientRect();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -222,17 +255,39 @@ class ScratchGame {
       lastPoint = pos;
       strokeCount++;
 
+      // Mark scratched cells in grid
+      const brushRadius = canvas.width * 0.16;
+      const minGx = Math.max(0, Math.floor((pos.x - brushRadius) / cellRadius));
+      const maxGx = Math.min(GRID_SIZE - 1, Math.floor((pos.x + brushRadius) / cellRadius));
+      const minGy = Math.max(0, Math.floor((pos.y - brushRadius) / cellRadius));
+      const maxGy = Math.min(GRID_SIZE - 1, Math.floor((pos.y + brushRadius) / cellRadius));
+
+      for (let gy = minGy; gy <= maxGy; gy++) {
+        for (let gx = minGx; gx <= maxGx; gx++) {
+          const cellCenterX = (gx + 0.5) * cellRadius;
+          const cellCenterY = (gy + 0.5) * cellRadius;
+          if (Math.hypot(pos.x - cellCenterX, pos.y - cellCenterY) <= brushRadius * 1.05) {
+            const dCenter = Math.hypot(gx - centerCell, gy - centerCell);
+            if (dCenter <= circleRadiusInCells) {
+              scratchedCells.add(`${gx},${gy}`);
+            }
+          }
+        }
+      }
+
+      const coverageRatio = totalValidCircleCells > 0 ? (scratchedCells.size / totalValidCircleCells) : 0;
+
       // Real-time particle shavings
       this.emitScratchParticles(pos.screenX, pos.screenY);
 
-      // Instant stroke-based detection (4 strokes = ~10-15% scratched)
-      if (strokeCount >= 4) {
+      // If user scratched 35%+ (in 30-50% range requested by user), reveal card!
+      if (coverageRatio >= 0.35) {
         this.revealCard(slot, card, index);
         return;
       }
 
-      // Check threshold every 2 strokes for pixel ratio
-      if (strokeCount % 2 === 0) {
+      // Check threshold every 3 strokes for actual pixel ratio if available
+      if (strokeCount % 3 === 0) {
         this.checkScratchProgress(canvas, slot, card, index);
       }
     };
@@ -256,7 +311,8 @@ class ScratchGame {
       if (!isDrawing) return;
       isDrawing = false;
       lastPoint = null;
-      if (strokeCount >= 2) {
+      const coverageRatio = totalValidCircleCells > 0 ? (scratchedCells.size / totalValidCircleCells) : 0;
+      if (coverageRatio >= 0.30) {
         this.revealCard(slot, card, index);
       } else {
         this.checkScratchProgress(canvas, slot, card, index);
@@ -377,8 +433,8 @@ class ScratchGame {
 
       if (circlePixels === 0) return;
       const ratio = transparentPixels / circlePixels;
-      // When 10% to 20% of the circle is scratched (threshold 10%), trigger complete 100% reveal!
-      if (ratio >= 0.10) {
+      // Require 35% (in the 30-50% range requested by user) scratched before complete reveal!
+      if (ratio >= 0.35) {
         this.revealCard(slot, card, index);
       }
     } catch (e) {}
@@ -457,6 +513,14 @@ class ScratchGame {
     }
 
     modal.classList.add('active');
+    this.startModalXRay('xray-canvas-win-gift');
+    this.startModalCongrats('congrats-canvas-win-gift');
+
+    // Reveal stage "Play Again" button after scratching & win popup
+    const controlsRow = document.getElementById('controls-row');
+    if (controlsRow) {
+      controlsRow.classList.add('active');
+    }
 
     if (window.fbq) {
       fbq('trackCustom', 'Win_Prize', {
@@ -465,7 +529,7 @@ class ScratchGame {
         card_id: card.id
       });
       fbq('track', 'Purchase', {
-        value: card.isGrand ? 888.00 : 10.00,
+        value: card.amount === '100$' ? 100.00 : 50.00,
         currency: 'USD',
         content_name: `Win ${card.name}`
       });
@@ -476,6 +540,43 @@ class ScratchGame {
     const badgeSlot = document.getElementById(`god-badge-${godIndex}`);
     if (badgeSlot) {
       badgeSlot.classList.add('unlocked');
+    }
+  }
+
+  resetGame() {
+    this.revealedCards.clear();
+    this.unlockedGods = 0;
+    this.isAutoScratching = false;
+
+    // Reset god badges if present
+    for (let i = 1; i <= 5; i++) {
+      const badge = document.getElementById(`god-badge-${i}`);
+      if (badge) badge.classList.remove('unlocked');
+    }
+
+    // Stop and clear fireworks & modal congrats & xray
+    this.fwRunning = false;
+    this.stopModalCongrats();
+    this.stopModalXRay();
+    if (this.fwCtx) {
+      const canvas = document.getElementById('fireworks-canvas');
+      if (canvas) {
+        this.fwCtx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    // Close any active modal
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+      modal.classList.remove('active');
+    });
+
+    // Re-initialize scratch slots cleanly
+    this.initSlots();
+
+    // Hide stage "Play Again" button so fresh game has no button
+    const controlsRow = document.getElementById('controls-row');
+    if (controlsRow) {
+      controlsRow.classList.remove('active');
     }
   }
 
@@ -515,12 +616,19 @@ class ScratchGame {
     setTimeout(() => {
       const modal = document.getElementById('modal-grand-win');
       if (modal) modal.classList.add('active');
+      this.startModalXRay('xray-canvas-grand-win');
+      this.startModalCongrats('congrats-canvas-grand-win');
+
+      const controlsRow = document.getElementById('controls-row');
+      if (controlsRow) {
+        controlsRow.classList.add('active');
+      }
 
       if (window.fbq) {
         fbq('track', 'Purchase', {
-          value: 888.00,
+          value: 100.00,
           currency: 'USD',
-          content_name: '888 Cash Grand Prize'
+          content_name: '100$ Cash Grand Prize'
         });
       }
     }, 900);
@@ -697,6 +805,398 @@ class ScratchGame {
         this.fwRunning = false;
       }, 1000);
     }, duration);
+  }
+
+  /* Celebration Confetti Shower for Win Modals */
+  startModalCongrats(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    this.stopModalCongrats();
+    this.congratsRunning = true;
+
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.parentElement ? canvas.parentElement.clientWidth : (this.stage ? this.stage.clientWidth : window.innerWidth);
+    canvas.height = canvas.parentElement ? canvas.parentElement.clientHeight : (this.stage ? this.stage.clientHeight : window.innerHeight);
+
+    const colors = ['#ffd700', '#ff3366', '#00e5ff', '#76ff03', '#ff9100', '#e040fb', '#ffffff', '#ffeb3b'];
+    const particles = [];
+    const count = 85;
+
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 3,
+        vy: 2.5 + Math.random() * 4,
+        rot: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.1,
+        w: 8 + Math.random() * 8,
+        h: 12 + Math.random() * 12,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        isStar: Math.random() < 0.3,
+        wobble: Math.random() * 10,
+        wobbleSpeed: 0.05 + Math.random() * 0.05
+      });
+    }
+
+    const drawStar = (cx, cy, spikes, outerRadius, innerRadius, color) => {
+      let rot = (Math.PI / 2) * 3;
+      let x = cx;
+      let y = cy;
+      const step = Math.PI / spikes;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - outerRadius);
+      for (let i = 0; i < spikes; i++) {
+        x = cx + Math.cos(rot) * outerRadius;
+        y = cy + Math.sin(rot) * outerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+        x = cx + Math.cos(rot) * innerRadius;
+        y = cy + Math.sin(rot) * innerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+      }
+      ctx.lineTo(cx, cy - outerRadius);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+    };
+
+    const animate = () => {
+      if (!this.congratsRunning) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return;
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx + Math.sin(p.wobble) * 1.2;
+        p.y += p.vy;
+        p.rot += p.rotSpeed;
+        p.wobble += p.wobbleSpeed;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+
+        if (p.isStar) {
+          drawStar(0, 0, 5, p.w * 0.9, p.w * 0.45, p.color);
+        } else {
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        }
+
+        ctx.restore();
+
+        // Recycle particle to top when it falls below screen
+        if (p.y > canvas.height + 25) {
+          p.y = -20;
+          p.x = Math.random() * canvas.width;
+          p.vy = 2 + Math.random() * 3.5;
+        }
+      }
+
+      this.congratsAnimId = requestAnimationFrame(animate);
+    };
+
+    this.congratsAnimId = requestAnimationFrame(animate);
+  }
+
+  stopModalCongrats() {
+    this.congratsRunning = false;
+    if (this.congratsAnimId) {
+      cancelAnimationFrame(this.congratsAnimId);
+      this.congratsAnimId = null;
+    }
+    ['congrats-canvas-win-gift', 'congrats-canvas-grand-win'].forEach(id => {
+      const c = document.getElementById(id);
+      if (c) {
+        const ctx = c.getContext('2d');
+        if (ctx) ctx.clearRect(0, 0, c.width, c.height);
+      }
+    });
+  }
+
+  /* Dynamic Volumetric God-Rays / X-Ray Engine (AAA Casino Heavenly Light Shafts + Sunburst Aura) */
+  startModalXRay(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    this.stopModalXRay();
+    this.xrayRunning = true;
+
+    const ctx = canvas.getContext('2d');
+    const stageWidth = this.stage ? this.stage.clientWidth : (canvas.parentElement ? canvas.parentElement.clientWidth : 360);
+    const stageHeight = this.stage ? this.stage.clientHeight : (canvas.parentElement ? canvas.parentElement.clientHeight : 640);
+    canvas.width = stageWidth;
+    canvas.height = stageHeight;
+
+    const cx = canvas.width / 2;
+    const cy = canvas.height * 0.48; // Centered right behind the prize showcase box
+    const maxRadius = Math.hypot(canvas.width, canvas.height) * 1.05;
+
+    // FAFA Brand Colors: Radiant Solar Gold, Champagne Diamond, Brilliant White, Deep Amber
+    // Layer 1: Clockwise Majestic God-Rays (Alternating Wide Volumetric Shafts & Intense Beams)
+    const primaryRays = [];
+    const primaryCount = 24;
+    const primaryColors = [
+      '255, 225, 40',   // Solar Gold
+      '255, 248, 170',  // Champagne Diamond
+      '255, 200, 20',   // Royal Gold
+      '255, 255, 255',  // Pure Diamond White
+      '255, 175, 10'    // Deep Amber
+    ];
+    for (let i = 0; i < primaryCount; i++) {
+      const isMajestic = (i % 3 === 0);
+      const isNeedle = (i % 3 === 2);
+      primaryRays.push({
+        baseAngle: (i / primaryCount) * Math.PI * 2,
+        angularSpan: isMajestic ? 0.22 : (isNeedle ? 0.05 : 0.12),
+        color: primaryColors[i % primaryColors.length],
+        baseAlpha: isMajestic ? 0.48 : (isNeedle ? 0.65 : 0.40),
+        pulseSpeed: 0.003 + Math.random() * 0.003,
+        pulseOffset: Math.random() * Math.PI * 2,
+        reachFactor: 0.95 + Math.random() * 0.2
+      });
+    }
+
+    // Layer 2: Counter-Clockwise Diamond Crystalline Light Beams
+    const secondaryRays = [];
+    const secondaryCount = 18;
+    const secondaryColors = [
+      '255, 255, 255',  // Pure Diamond
+      '255, 240, 150',  // Light Gold
+      '230, 245, 255'   // Platinum Shimmer
+    ];
+    for (let i = 0; i < secondaryCount; i++) {
+      secondaryRays.push({
+        baseAngle: (i / secondaryCount) * Math.PI * 2 + 0.18,
+        angularSpan: (i % 2 === 0 ? 0.06 : 0.11),
+        color: secondaryColors[i % secondaryColors.length],
+        baseAlpha: 0.35 + Math.random() * 0.25,
+        pulseSpeed: 0.004 + Math.random() * 0.003,
+        pulseOffset: Math.random() * Math.PI * 2,
+        reachFactor: 0.85 + Math.random() * 0.25
+      });
+    }
+
+    // Layer 3: Floating Golden Stardust & Twinkle Stars
+    const motes = [];
+    const moteCount = 36;
+    for (let i = 0; i < moteCount; i++) {
+      motes.push({
+        x: cx + (Math.random() - 0.5) * canvas.width * 0.95,
+        y: cy + (Math.random() - 0.5) * canvas.height * 0.95,
+        vx: (Math.random() - 0.5) * 0.7,
+        vy: -0.8 - Math.random() * 1.3,
+        size: 2.5 + Math.random() * 4.5,
+        rot: Math.random() * Math.PI,
+        rotSpeed: (Math.random() - 0.5) * 0.05,
+        color: Math.random() < 0.6 ? '#ffd700' : (Math.random() < 0.85 ? '#ffffff' : '#ffb700'),
+        alpha: 0.4 + Math.random() * 0.6,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+
+    // Expanding Energy Shockwave Rings
+    const rings = [];
+    let lastRingTime = 0;
+
+    const startTime = performance.now();
+    let rotCW = 0;
+    let rotCCW = 0;
+
+    // Helper to draw brilliant multi-pointed lens flare star
+    const drawFlareStar = (x, y, radius, rot, color, alpha, points = 4, innerRatio = 0.18) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rot);
+      ctx.fillStyle = color;
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      const inner = radius * innerRatio;
+      for (let s = 0; s < points; s++) {
+        const a1 = (s * Math.PI * 2) / points;
+        const a2 = a1 + (Math.PI / points);
+        ctx.lineTo(Math.cos(a1) * radius, Math.sin(a1) * radius);
+        ctx.lineTo(Math.cos(a2) * inner, Math.sin(a2) * inner);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    };
+
+    const animateXRay = (now) => {
+      if (!this.xrayRunning) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return;
+      }
+
+      const elapsed = now - startTime;
+      rotCW += 0.007;   // Clockwise rotation (lively & smooth)
+      rotCCW -= 0.0055; // Counter-clockwise rotation
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Additive blend mode for heavenly, high-intensity luminous glow!
+      ctx.globalCompositeOperation = 'lighter';
+
+      // 1. Central Celestial Supernova Halo (Bathes dark background in rich warm gold)
+      const corePulse = 1 + 0.16 * Math.sin(elapsed * 0.005);
+      const coreRadius = Math.max(canvas.width, canvas.height) * 0.55 * corePulse;
+      const coreGrad = ctx.createRadialGradient(cx, cy, 10, cx, cy, coreRadius);
+      coreGrad.addColorStop(0, 'rgba(255, 255, 240, 0.85)');
+      coreGrad.addColorStop(0.2, 'rgba(255, 225, 60, 0.50)');
+      coreGrad.addColorStop(0.45, 'rgba(255, 170, 20, 0.25)');
+      coreGrad.addColorStop(0.75, 'rgba(255, 120, 0, 0.10)');
+      coreGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = coreGrad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, coreRadius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 2. Layer 1: Clockwise Golden Sunburst God-Rays
+      for (let i = 0; i < primaryRays.length; i++) {
+        const r = primaryRays[i];
+        const aCenter = r.baseAngle + rotCW;
+        const halfSpan = r.angularSpan / 2;
+        const aStart = aCenter - halfSpan;
+        const aEnd = aCenter + halfSpan;
+        const pulse = 0.8 + 0.25 * Math.sin(elapsed * r.pulseSpeed + r.pulseOffset);
+        const currentAlpha = r.baseAlpha * pulse;
+
+        const rayDist = maxRadius * r.reachFactor;
+        const rayGrad = ctx.createRadialGradient(cx, cy, 30, cx, cy, rayDist);
+        rayGrad.addColorStop(0, `rgba(${r.color}, ${Math.min(1, currentAlpha * 1.4)})`);
+        rayGrad.addColorStop(0.3, `rgba(${r.color}, ${currentAlpha})`);
+        rayGrad.addColorStop(0.65, `rgba(${r.color}, ${currentAlpha * 0.45})`);
+        rayGrad.addColorStop(1, `rgba(${r.color}, 0)`);
+
+        ctx.fillStyle = rayGrad;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, rayDist, aStart, aEnd);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // 3. Layer 2: Counter-Clockwise Diamond Crystalline Light Beams
+      for (let i = 0; i < secondaryRays.length; i++) {
+        const r = secondaryRays[i];
+        const aCenter = r.baseAngle + rotCCW;
+        const halfSpan = r.angularSpan / 2;
+        const aStart = aCenter - halfSpan;
+        const aEnd = aCenter + halfSpan;
+        const pulse = 0.75 + 0.3 * Math.sin(elapsed * r.pulseSpeed + r.pulseOffset);
+        const currentAlpha = r.baseAlpha * pulse;
+
+        const rayDist = maxRadius * r.reachFactor;
+        const rayGrad = ctx.createRadialGradient(cx, cy, 25, cx, cy, rayDist);
+        rayGrad.addColorStop(0, `rgba(${r.color}, ${Math.min(1, currentAlpha * 1.5)})`);
+        rayGrad.addColorStop(0.35, `rgba(${r.color}, ${currentAlpha})`);
+        rayGrad.addColorStop(0.75, `rgba(${r.color}, ${currentAlpha * 0.35})`);
+        rayGrad.addColorStop(1, `rgba(${r.color}, 0)`);
+
+        ctx.fillStyle = rayGrad;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, rayDist, aStart, aEnd);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // 4. Cinematic Anamorphic Horizontal Flare (Hollywood Movie-Grade Center Gleam)
+      const anamorphicPulse = 1 + 0.2 * Math.sin(elapsed * 0.006);
+      const anamorphicWidth = canvas.width * 1.15;
+      const anamorphicHeight = 24 * anamorphicPulse;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(Math.sin(elapsed * 0.001) * 0.08); // Subtle cinematic breathe tilt
+      const anamGrad = ctx.createRadialGradient(0, 0, 4, 0, 0, anamorphicWidth / 2);
+      anamGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+      anamGrad.addColorStop(0.2, 'rgba(255, 230, 120, 0.65)');
+      anamGrad.addColorStop(0.5, 'rgba(255, 180, 40, 0.25)');
+      anamGrad.addColorStop(1, 'rgba(255, 180, 40, 0)');
+      ctx.fillStyle = anamGrad;
+      ctx.scale(1, anamorphicHeight / (anamorphicWidth / 2));
+      ctx.beginPath();
+      ctx.arc(0, 0, anamorphicWidth / 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // 5. Central 8-Point Lens Flare Stars (Dual Counter-Rotating Diamond Glints)
+      const flarePulse = 1 + 0.2 * Math.sin(elapsed * 0.006);
+      const flareSize = 160 * flarePulse;
+      drawFlareStar(cx, cy, flareSize, rotCW * 0.7, '#fff1a8', 0.45, 8, 0.15);
+      drawFlareStar(cx, cy, flareSize * 0.72, rotCCW * 0.7 + 0.39, '#ffffff', 0.40, 8, 0.12);
+
+      // 6. Expanding Concentric Golden Energy Shockwave Rings
+      if (elapsed - lastRingTime > 1000) {
+        rings.push({ radius: 30, maxRadius: Math.max(canvas.width, canvas.height) * 0.75, alpha: 0.55 });
+        lastRingTime = elapsed;
+      }
+
+      for (let i = rings.length - 1; i >= 0; i--) {
+        const ring = rings[i];
+        ring.radius += 3.6;
+        const progress = ring.radius / ring.maxRadius;
+        const ringAlpha = ring.alpha * (1 - progress);
+
+        if (progress >= 1) {
+          rings.splice(i, 1);
+          continue;
+        }
+
+        ctx.strokeStyle = `rgba(255, 230, 100, ${ringAlpha})`;
+        ctx.lineWidth = 2.6 * (1 - progress * 0.5);
+        ctx.beginPath();
+        ctx.arc(cx, cy, ring.radius, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // 7. Floating 4-Pointed Golden & Diamond Twinkle Stars
+      for (let i = 0; i < motes.length; i++) {
+        const m = motes[i];
+        m.x += m.vx;
+        m.y += m.vy;
+        m.rot += m.rotSpeed;
+        m.phase += 0.06;
+        const twinkle = 0.4 + 0.6 * Math.sin(m.phase);
+
+        drawFlareStar(m.x, m.y, m.size * (0.8 + 0.35 * twinkle), m.rot, m.color, m.alpha * twinkle, 4, 0.2);
+
+        // Recycle mote
+        if (m.y < -25 || m.x < -25 || m.x > canvas.width + 25) {
+          m.y = canvas.height + 15;
+          m.x = cx + (Math.random() - 0.5) * canvas.width * 0.95;
+        }
+      }
+
+      ctx.globalAlpha = 1.0;
+      ctx.globalCompositeOperation = 'source-over';
+
+      this.xrayAnimId = requestAnimationFrame(animateXRay);
+    };
+
+    this.xrayAnimId = requestAnimationFrame(animateXRay);
+  }
+
+  stopModalXRay() {
+    this.xrayRunning = false;
+    if (this.xrayAnimId) {
+      cancelAnimationFrame(this.xrayAnimId);
+      this.xrayAnimId = null;
+    }
+    ['xray-canvas-win-gift', 'xray-canvas-grand-win'].forEach(id => {
+      const c = document.getElementById(id);
+      if (c) {
+        const ctx = c.getContext('2d');
+        if (ctx) ctx.clearRect(0, 0, c.width, c.height);
+      }
+    });
   }
 }
 
