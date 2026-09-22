@@ -12,143 +12,15 @@ const CONFIG = {
 
 // 6 Cards Definition with New Professional 3D Assets
 const CARD_DATA = [
-  { id: 1, name: '黄金票5份', amount: '5份', icon: 'images/ticket_gold_5_pro.png', type: 'gold', godIndex: 1 },
-  { id: 2, name: '五路财神+1', amount: '财神', icon: 'images/ticket_god_pro.png', type: 'god', godIndex: 2 },
-  { id: 3, name: '黄金票10份', amount: '10份', icon: 'images/ticket_gold_10_pro.png', type: 'gold', godIndex: 3 },
-  { id: 4, name: '现金红包 88元', amount: '88元', icon: 'images/ticket_redpacket_pro.png', type: 'cash', godIndex: 4 },
-  { id: 5, name: '五路财神+1', amount: '财神', icon: 'images/ticket_god_pro.png', type: 'god', godIndex: 5 },
-  { id: 6, name: '现金大奖 888元', amount: '888元', icon: 'images/ticket_grand_888_pro.png', type: 'grand', isGrand: true }
+  { id: 1, name: 'សំបុត្រមាស 5សន្លឹក', amount: '5សន្លឹក', icon: 'images/ticket_gold_5_pro.png', type: 'gold', godIndex: 1 },
+  { id: 2, name: 'ទេវតាទ្រព្យ+1', amount: 'ទេវតា', icon: 'images/ticket_god_pro.png', type: 'god', godIndex: 2 },
+  { id: 3, name: 'សំបុត្រមាស 10សន្លឹក', amount: '10សន្លឹក', icon: 'images/ticket_gold_10_pro.png', type: 'gold', godIndex: 3 },
+  { id: 4, name: 'ស្រោមក្រហម 88$', amount: '88$', icon: 'images/ticket_redpacket_pro.png', type: 'cash', godIndex: 4 },
+  { id: 5, name: 'ទេវតាទ្រព្យ+1', amount: 'ទេវតា', icon: 'images/ticket_god_pro.png', type: 'god', godIndex: 5 },
+  { id: 6, name: 'រង្វាន់ធំ 888$', amount: '888$', icon: 'images/ticket_grand_888_pro.png', type: 'grand', isGrand: true }
 ];
 
-// Web Audio Sound Synthesizer
-class SoundSynthesizer {
-  constructor() {
-    this.ctx = null;
-    this.bgmPlaying = false;
-    this.bgmTimer = null;
-    this.step = 0;
-  }
 
-  init() {
-    if (!this.ctx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) {
-        this.ctx = new AudioCtx();
-      }
-    }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
-    }
-  }
-
-  // Realistic scratch friction noise
-  playScratch() {
-    this.init();
-    if (!this.ctx) return;
-    try {
-      const bufferSize = this.ctx.sampleRate * 0.08;
-      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-      const output = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        output[i] = Math.random() * 2 - 1;
-      }
-      const whiteNoise = this.ctx.createBufferSource();
-      whiteNoise.buffer = buffer;
-
-      const filter = this.ctx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.value = 1400 + Math.random() * 600;
-      filter.Q.value = 2.5;
-
-      const gain = this.ctx.createGain();
-      gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
-
-      whiteNoise.connect(filter);
-      filter.connect(gain);
-      gain.connect(this.ctx.destination);
-      whiteNoise.start();
-    } catch (e) {}
-  }
-
-  // Bell/Chime note for card reveal
-  playChime(noteIndex = 0) {
-    this.init();
-    if (!this.ctx) return;
-    try {
-      const pentatonic = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50]; // C5, D5, E5, G5, A5, C6
-      const freq = pentatonic[noteIndex % pentatonic.length];
-
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-
-      gain.gain.setValueAtTime(0.22, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.6);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start();
-      osc.stop(this.ctx.currentTime + 0.6);
-    } catch (e) {}
-  }
-
-  // Victory fanfare
-  playFanfare() {
-    this.init();
-    if (!this.ctx) return;
-    try {
-      const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
-      notes.forEach((freq, idx) => {
-        setTimeout(() => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-          gain.gain.setValueAtTime(0.28, this.ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.8);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start();
-          osc.stop(this.ctx.currentTime + 0.8);
-        }, idx * 110);
-      });
-    } catch (e) {}
-  }
-
-  // Festive Chinese Pentatonic BGM Loop
-  toggleBgm() {
-    this.init();
-    const btn = document.getElementById('music-toggle-btn');
-    if (this.bgmPlaying) {
-      this.bgmPlaying = false;
-      if (this.bgmTimer) clearInterval(this.bgmTimer);
-      if (btn) btn.classList.remove('playing');
-    } else {
-      this.bgmPlaying = true;
-      if (btn) btn.classList.add('playing');
-      const melody = [523, 523, 587, 659, 784, 659, 587, 523, 659, 784, 880, 784, 659, 523];
-      this.step = 0;
-      this.bgmTimer = setInterval(() => {
-        if (!this.bgmPlaying || !this.ctx) return;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(melody[this.step % melody.length], this.ctx.currentTime);
-        gain.gain.setValueAtTime(0.07, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.28);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.3);
-        this.step++;
-      }, 320);
-    }
-  }
-}
-
-const sounds = new SoundSynthesizer();
 
 // Main Game Controller
 class ScratchGame {
@@ -156,21 +28,37 @@ class ScratchGame {
     this.revealedCards = new Set();
     this.unlockedGods = 0;
     this.isAutoScratching = false;
+
+    // Authentic FAFA558 circular stamp image
     this.stampImg = new Image();
-    this.stampImg.src = 'images/stamp_circle_pro.png';
+    this.stampImg.src = 'images/stamp_circle-new.png';
     this.stampReady = false;
-    this.stampImg.onload = () => { this.stampReady = true; this.initSlots(); };
+    this.stampImg.onload = () => {
+      this.stampReady = true;
+      this.initSlots();
+    };
+    this.stampImg.onerror = () => {
+      this.stampReady = false;
+      this.initSlots();
+    };
 
     this.initUI();
     this.initBackgroundCoins();
     this.initFireworks();
+
+    // Resize listener for responsive canvas buffer recalculation
+    window.addEventListener('resize', () => {
+      this.refreshCanvases();
+    });
   }
 
   initUI() {
-    // Navigation music button
-    const musicBtn = document.getElementById('music-toggle-btn');
-    if (musicBtn) {
-      musicBtn.addEventListener('click', () => sounds.toggleBgm());
+
+
+    // More info button
+    const moreBtn = document.querySelector('.nav-btn-more');
+    if (moreBtn) {
+      moreBtn.addEventListener('click', () => this.openWelfareModal());
     }
 
     // Auto-play background video
@@ -257,16 +145,34 @@ class ScratchGame {
 
       grid.appendChild(slot);
 
-      // Setup Canvas
+      // Setup Canvas Scratch Engine
       this.setupCanvas(canvas, slot, card, index);
+    });
+  }
+
+  refreshCanvases() {
+    CARD_DATA.forEach((card) => {
+      if (this.revealedCards.has(card.id)) return;
+      const slot = document.getElementById(`slot-${card.id}`);
+      if (!slot) return;
+      const canvas = slot.querySelector('.scratch-canvas');
+      if (!canvas) return;
+      const rect = slot.getBoundingClientRect();
+      const size = Math.round(rect.width) || 100;
+      const dpr = Math.min(window.devicePixelRatio || 2, 2.5);
+      canvas.width = Math.round(size * dpr);
+      canvas.height = Math.round(size * dpr);
+      const ctx = canvas.getContext('2d');
+      this.renderFoil(ctx, canvas.width, canvas.height);
     });
   }
 
   setupCanvas(canvas, slot, card, index) {
     const rect = slot.getBoundingClientRect();
-    const size = Math.min(rect.width, rect.height) || 100;
-    canvas.width = size * 2; // HiDPI
-    canvas.height = size * 2;
+    const size = Math.round(rect.width) || 100;
+    const dpr = Math.min(window.devicePixelRatio || 2, 2.5);
+    canvas.width = Math.round(size * dpr);
+    canvas.height = Math.round(size * dpr);
     canvas.style.width = '100%';
     canvas.style.height = '100%';
 
@@ -292,38 +198,48 @@ class ScratchGame {
     const scratch = (pos) => {
       if (this.revealedCards.has(card.id)) return;
 
+      ctx.save();
       ctx.globalCompositeOperation = 'destination-out';
-      ctx.beginPath();
+      ctx.fillStyle = '#000000';
+      ctx.strokeStyle = '#000000';
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
       const radius = canvas.width * 0.16; // scratch radius
+      ctx.beginPath();
       ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
       ctx.fill();
 
       if (lastPoint) {
         ctx.beginPath();
         ctx.lineWidth = radius * 2;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
         ctx.moveTo(lastPoint.x, lastPoint.y);
         ctx.lineTo(pos.x, pos.y);
         ctx.stroke();
       }
+      ctx.restore();
 
       lastPoint = pos;
       strokeCount++;
 
-      // Sound and particles
-      sounds.playScratch();
+      // Real-time particle shavings
       this.emitScratchParticles(pos.screenX, pos.screenY);
 
-      // Check threshold every 8 strokes
-      if (strokeCount % 8 === 0) {
+      // Instant stroke-based detection (4 strokes = ~10-15% scratched)
+      if (strokeCount >= 4) {
+        this.revealCard(slot, card, index);
+        return;
+      }
+
+      // Check threshold every 2 strokes for pixel ratio
+      if (strokeCount % 2 === 0) {
         this.checkScratchProgress(canvas, slot, card, index);
       }
     };
 
     const start = (e) => {
       if (this.revealedCards.has(card.id)) return;
-      sounds.init();
+      if (e.cancelable) e.preventDefault();
       isDrawing = true;
       lastPoint = getPos(e);
       scratch(lastPoint);
@@ -331,7 +247,7 @@ class ScratchGame {
 
     const move = (e) => {
       if (!isDrawing || this.revealedCards.has(card.id)) return;
-      e.preventDefault();
+      if (e.cancelable) e.preventDefault();
       const pos = getPos(e);
       scratch(pos);
     };
@@ -340,7 +256,11 @@ class ScratchGame {
       if (!isDrawing) return;
       isDrawing = false;
       lastPoint = null;
-      this.checkScratchProgress(canvas, slot, card, index);
+      if (strokeCount >= 2) {
+        this.revealCard(slot, card, index);
+      } else {
+        this.checkScratchProgress(canvas, slot, card, index);
+      }
     };
 
     canvas.addEventListener('mousedown', start);
@@ -350,29 +270,76 @@ class ScratchGame {
     canvas.addEventListener('touchstart', start, { passive: false });
     window.addEventListener('touchmove', move, { passive: false });
     window.addEventListener('touchend', end);
+    window.addEventListener('touchcancel', end);
   }
 
   renderFoil(ctx, w, h) {
-    // Clear and draw base metallic foil circle
     ctx.clearRect(0, 0, w, h);
     ctx.save();
+
+    // Perfect circle clip
     ctx.beginPath();
-    ctx.arc(w / 2, h / 2, w / 2 - 2, 0, Math.PI * 2);
+    ctx.arc(w / 2, h / 2, w / 2 - 1, 0, Math.PI * 2);
     ctx.clip();
 
     // Metallic gold gradient
     const grad = ctx.createLinearGradient(0, 0, w, h);
-    grad.addColorStop(0, '#f9d29f');
-    grad.addColorStop(0.3, '#d3874b');
-    grad.addColorStop(0.7, '#b75b28');
-    grad.addColorStop(1, '#8a3311');
+    grad.addColorStop(0, '#fef0c8');
+    grad.addColorStop(0.25, '#f6c97a');
+    grad.addColorStop(0.5, '#d48a3c');
+    grad.addColorStop(0.75, '#aa571c');
+    grad.addColorStop(1, '#6f2409');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, w, h);
 
-    // Draw the circular stamp image centered
-    if (this.stampReady) {
-      ctx.drawImage(this.stampImg, 0, 0, w, h);
+    // Draw authentic 818 stamp
+    if (this.stampReady && this.stampImg.complete && this.stampImg.naturalWidth > 0) {
+      const pad = w * 0.04;
+      ctx.drawImage(this.stampImg, pad, pad, w - pad * 2, h - pad * 2);
+    } else {
+      this.drawVectorStamp(ctx, w, h);
     }
+
+    // Outer subtle gold bevel ring
+    ctx.strokeStyle = 'rgba(255, 215, 0, 0.85)';
+    ctx.lineWidth = w * 0.03;
+    ctx.beginPath();
+    ctx.arc(w / 2, h / 2, w / 2 - w * 0.02, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  drawVectorStamp(ctx, w, h) {
+    const cx = w / 2;
+    const cy = h / 2;
+    const r = w * 0.44;
+
+    ctx.save();
+    // Inner red seal
+    ctx.fillStyle = '#a81818';
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * 0.88, 0, Math.PI * 2);
+    ctx.fill();
+
+    // White outer ring
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = w * 0.025;
+    ctx.stroke();
+
+    // Gold star
+    ctx.fillStyle = '#fff9c4';
+    ctx.beginPath();
+    ctx.arc(cx, cy - r * 0.36, r * 0.16, 0, Math.PI * 2);
+    ctx.fill();
+
+    // FAFA558 text
+    ctx.fillStyle = '#ffffff';
+    ctx.font = `900 ${Math.round(w * 0.14)}px 'Outfit', -apple-system, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('FAFA558', cx, cy + r * 0.1);
+
     ctx.restore();
   }
 
@@ -383,23 +350,35 @@ class ScratchGame {
       const ctx = canvas.getContext('2d');
       const w = canvas.width;
       const h = canvas.height;
-      // Sample 32x32 grid to compute transparent percentage
+      const cx = w / 2;
+      const cy = h / 2;
+      const r = w / 2 - 2;
+      const rSq = r * r;
+
       const imgData = ctx.getImageData(0, 0, w, h);
       const data = imgData.data;
-      let transparent = 0;
-      const step = 4 * 8; // sample every 8th pixel
-      let total = 0;
+      let circlePixels = 0;
+      let transparentPixels = 0;
+      const step = 8;
 
-      for (let i = 3; i < data.length; i += step) {
-        total++;
-        if (data[i] < 40) {
-          transparent++;
+      for (let y = 0; y < h; y += step) {
+        for (let x = 0; x < w; x += step) {
+          const dx = x - cx;
+          const dy = y - cy;
+          if (dx * dx + dy * dy <= rSq) {
+            circlePixels++;
+            const idx = (y * w + x) * 4 + 3;
+            if (data[idx] < 45) {
+              transparentPixels++;
+            }
+          }
         }
       }
 
-      const ratio = transparent / total;
-      // If scratched > 38%, trigger complete reveal
-      if (ratio > 0.38) {
+      if (circlePixels === 0) return;
+      const ratio = transparentPixels / circlePixels;
+      // When 10% to 20% of the circle is scratched (threshold 10%), trigger complete 100% reveal!
+      if (ratio >= 0.10) {
         this.revealCard(slot, card, index);
       }
     } catch (e) {}
@@ -411,20 +390,28 @@ class ScratchGame {
 
     slot.classList.add('revealed');
 
-    // Add sparkle burst element
+    // Fade out and clear scratch canvas completely so gift is 100% visible
+    const canvas = slot.querySelector('.scratch-canvas');
+    if (canvas) {
+      canvas.classList.add('cleared');
+      canvas.style.opacity = '0';
+      canvas.style.pointerEvents = 'none';
+      setTimeout(() => {
+        try {
+          const ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        } catch (e) {}
+      }, 350);
+    }
+
+    // Sparkle burst element
     const sparkle = document.createElement('div');
     sparkle.className = 'revealed-sparkle';
     slot.appendChild(sparkle);
     setTimeout(() => sparkle.remove(), 800);
 
-    // Play chime sound
-    sounds.playChime(this.revealedCards.size);
-
-    // Update 5 Gods of Wealth progress
-    if (this.unlockedGods < 5) {
-      this.unlockedGods++;
-      this.unlockGodBadge(this.unlockedGods);
-    }
+    // Mini celebration fireworks
+    this.startFireworks(1500);
 
     // Track scratch event
     if (window.fbq) {
@@ -435,11 +422,53 @@ class ScratchGame {
       });
     }
 
-    // If all cards or grand card revealed: trigger Grand Victory!
-    if (this.revealedCards.size === CARD_DATA.length || card.isGrand) {
-      setTimeout(() => {
-        this.triggerGrandVictory();
-      }, 700);
+    // After 1.5s (1-3s), popup message win that gift and has button claim with link
+    setTimeout(() => {
+      this.openWinGiftModal(card);
+    }, 1500);
+  }
+
+  openWinGiftModal(card) {
+    const modal = document.getElementById('modal-win-gift');
+    if (!modal) return;
+
+    const tag = document.getElementById('win-gift-tag');
+    const title = document.getElementById('win-gift-title');
+    const desc = document.getElementById('win-gift-desc');
+    const icon = document.getElementById('win-gift-icon');
+    const amount = document.getElementById('win-gift-amount');
+    const cta = document.getElementById('win-gift-cta');
+
+    if (tag) tag.textContent = '🎉 សូមអបអរសាទរ 🎉';
+    if (title) title.textContent = `អ្នកបានឈ្នះ ${card.name}!`;
+    if (desc) desc.textContent = 'សូមចុចទទួលយករង្វាន់របស់អ្នកឥឡូវនេះ';
+    if (icon) {
+      icon.src = card.icon;
+      icon.alt = card.name;
+    }
+    if (amount) amount.textContent = card.amount || card.name;
+    if (cta) {
+      cta.setAttribute('data-cta-action', `Claim ${card.name}`);
+      cta.href = CONFIG.telegramUrl;
+      cta.onclick = (e) => {
+        e.preventDefault();
+        this.handleConversionClick(`Claim ${card.name}`);
+      };
+    }
+
+    modal.classList.add('active');
+
+    if (window.fbq) {
+      fbq('trackCustom', 'Win_Prize', {
+        prize_name: card.name,
+        prize_amount: card.amount,
+        card_id: card.id
+      });
+      fbq('track', 'Purchase', {
+        value: card.isGrand ? 888.00 : 10.00,
+        currency: 'USD',
+        content_name: `Win ${card.name}`
+      });
     }
   }
 
@@ -453,7 +482,6 @@ class ScratchGame {
   autoScratchAll() {
     if (this.isAutoScratching) return;
     this.isAutoScratching = true;
-    sounds.init();
 
     const unrevealed = CARD_DATA.filter(c => !this.revealedCards.has(c.id));
     if (unrevealed.length === 0) {
@@ -476,7 +504,6 @@ class ScratchGame {
   }
 
   triggerGrandVictory() {
-    sounds.playFanfare();
     this.startFireworks(4500);
 
     // Unlock all 5 gods
@@ -506,7 +533,7 @@ class ScratchGame {
 
     container.innerHTML = '';
     if (this.revealedCards.size === 0) {
-      container.innerHTML = '<div style="text-align:center; padding: 20px; color:#888;">尚未刮开任何奖品，快点击刮开吧！</div>';
+      container.innerHTML = '<div style="text-align:center; padding: 20px; color:#888;">មិនទាន់បានកោសរង្វាន់ណាមួយទេ សូមចុចកោសឥឡូវនេះ!</div>';
     } else {
       CARD_DATA.forEach(card => {
         if (this.revealedCards.has(card.id)) {
@@ -517,7 +544,7 @@ class ScratchGame {
               <img class="prize-item-thumb" src="${card.icon}" alt="${card.name}">
               <span class="prize-item-name">${card.name}</span>
             </div>
-            <span class="prize-item-status">已获得 ✓</span>
+            <span class="prize-item-status">ទទួលបានហើយ ✓</span>
           `;
           container.appendChild(row);
         }

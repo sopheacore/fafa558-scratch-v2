@@ -12,10 +12,7 @@ A high-converting, mobile-first interactive scratch-card landing page built for 
 - **Progress Tracking ("集齐五路财神")**:
   - Top 5 Gods of Wealth banner progression badges dynamically light up with golden flame glow as Gods are revealed.
   - Unlocking all 5 Gods triggers the Grand Victory Jackpot modal.
-- **Web Audio API Sound Engine**:
-  - Polyphonic sound synthesizer for scratch friction noise, pentatonic card reveal chimes, and victory fanfare.
-  - Interactive festive Chinese New Year BGM toggle (`🎵`).
-  - Zero external sound asset dependencies.
+
 - **Modals & Drawers**:
   - 🎊 Grand Victory Modal (`888元 现金大奖`) with fireworks particle engine.
   - 🏆 My Prizes Drawer (`我的奖品`) displaying won tickets and cash packets.
