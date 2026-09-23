@@ -29,6 +29,10 @@ class ScratchGame {
     this.unlockedGods = 0;
     this.isAutoScratching = false;
 
+    // Preload Money Bill banknote image for money rain/snow celebration
+    this.moneyBillImg = new Image();
+    this.moneyBillImg.src = 'images/money_bill.png';
+
     // Authentic FAFA558 circular stamp image
     this.stampImg = new Image();
     this.stampImg.src = 'images/stamp_circle-new.png';
@@ -807,7 +811,7 @@ class ScratchGame {
     }, duration);
   }
 
-  /* Celebration Confetti Shower for Win Modals */
+  /* Celebration Money Snow & Fluttering Dollar Bills Shower for Win Modals */
   startModalCongrats(canvasId) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
@@ -819,48 +823,124 @@ class ScratchGame {
     canvas.width = canvas.parentElement ? canvas.parentElement.clientWidth : (this.stage ? this.stage.clientWidth : window.innerWidth);
     canvas.height = canvas.parentElement ? canvas.parentElement.clientHeight : (this.stage ? this.stage.clientHeight : window.innerHeight);
 
-    const colors = ['#ffd700', '#ff3366', '#00e5ff', '#76ff03', '#ff9100', '#e040fb', '#ffffff', '#ffeb3b'];
-    const particles = [];
-    const count = 85;
+    if (!this.moneyBillImg) {
+      this.moneyBillImg = new Image();
+      this.moneyBillImg.src = 'images/money_bill.png';
+    }
 
-    for (let i = 0; i < count; i++) {
+    const billAspect = 192 / 432; // height / width
+    const particles = [];
+    const billCount = 36;
+    const coinCount = 16;
+    const sparkleCount = 20;
+
+    // Dollar Bills Particles (3D tumbling money snow)
+    for (let i = 0; i < billCount; i++) {
+      const w = (42 + Math.random() * 30) * (canvas.width / 390);
+      const h = w * billAspect;
       particles.push({
+        type: 'bill',
         x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 3,
-        vy: 2.5 + Math.random() * 4,
-        rot: Math.random() * Math.PI * 2,
-        rotSpeed: (Math.random() - 0.5) * 0.1,
-        w: 8 + Math.random() * 8,
-        h: 12 + Math.random() * 12,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        isStar: Math.random() < 0.3,
-        wobble: Math.random() * 10,
-        wobbleSpeed: 0.05 + Math.random() * 0.05
+        y: (Math.random() * 1.5 - 0.5) * canvas.height,
+        w: w,
+        h: h,
+        vy: 1.8 + Math.random() * 2.6,
+        vx: (Math.random() - 0.5) * 1.4,
+        rotZ: Math.random() * Math.PI * 2,
+        rotSpeedZ: (Math.random() - 0.5) * 0.035,
+        rotY: Math.random() * Math.PI * 2,
+        rotSpeedY: 0.025 + Math.random() * 0.045,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: 0.03 + Math.random() * 0.03,
+        wobbleAmp: 1.2 + Math.random() * 1.8,
+        opacity: 0.88 + Math.random() * 0.12,
+        scale: 0.8 + Math.random() * 0.35
       });
     }
 
-    const drawStar = (cx, cy, spikes, outerRadius, innerRadius, color) => {
-      let rot = (Math.PI / 2) * 3;
-      let x = cx;
-      let y = cy;
-      const step = Math.PI / spikes;
+    // Shiny Gold Coins Particles
+    for (let i = 0; i < coinCount; i++) {
+      const radius = (10 + Math.random() * 8) * (canvas.width / 390);
+      particles.push({
+        type: 'coin',
+        x: Math.random() * canvas.width,
+        y: (Math.random() * 1.5 - 0.5) * canvas.height,
+        radius: radius,
+        vy: 2.0 + Math.random() * 2.8,
+        vx: (Math.random() - 0.5) * 1.5,
+        rot: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.05,
+        flip: Math.random() * Math.PI * 2,
+        flipSpeed: 0.04 + Math.random() * 0.06,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: 0.04 + Math.random() * 0.04
+      });
+    }
+
+    // Sparkling Gold Stars Particles
+    for (let i = 0; i < sparkleCount; i++) {
+      particles.push({
+        type: 'sparkle',
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: (5 + Math.random() * 6) * (canvas.width / 390),
+        vy: 1.0 + Math.random() * 2.0,
+        vx: (Math.random() - 0.5) * 0.8,
+        pulse: Math.random() * Math.PI * 2,
+        pulseSpeed: 0.06 + Math.random() * 0.08,
+        color: Math.random() > 0.3 ? '#ffd700' : '#ffffff'
+      });
+    }
+
+    const drawGoldCoin = (cx, cy, r, flip) => {
+      ctx.save();
+      ctx.translate(cx, cy);
+      const scaleX = Math.cos(flip);
+      ctx.scale(Math.abs(scaleX) < 0.1 ? 0.1 : scaleX, 1);
+
+      const grad = ctx.createLinearGradient(-r, -r, r, r);
+      grad.addColorStop(0, '#fff6a9');
+      grad.addColorStop(0.3, '#fbc02d');
+      grad.addColorStop(0.7, '#f57f17');
+      grad.addColorStop(1, '#ffeb3b');
+
       ctx.beginPath();
-      ctx.moveTo(cx, cy - outerRadius);
-      for (let i = 0; i < spikes; i++) {
-        x = cx + Math.cos(rot) * outerRadius;
-        y = cy + Math.sin(rot) * outerRadius;
-        ctx.lineTo(x, y);
-        rot += step;
-        x = cx + Math.cos(rot) * innerRadius;
-        y = cy + Math.sin(rot) * innerRadius;
-        ctx.lineTo(x, y);
-        rot += step;
-      }
-      ctx.lineTo(cx, cy - outerRadius);
-      ctx.closePath();
-      ctx.fillStyle = color;
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
       ctx.fill();
+
+      ctx.lineWidth = Math.max(1.5, r * 0.16);
+      ctx.strokeStyle = '#fff9c4';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.rect(-r * 0.35, -r * 0.35, r * 0.7, r * 0.7);
+      ctx.strokeStyle = '#e65100';
+      ctx.lineWidth = Math.max(1, r * 0.1);
+      ctx.stroke();
+
+      ctx.restore();
+    };
+
+    const drawSparkle = (cx, cy, s, alpha, color) => {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+      ctx.fillStyle = color;
+      ctx.shadowColor = '#ffd700';
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.arc(cx, cy, s * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - s);
+      ctx.lineTo(cx, cy + s);
+      ctx.moveTo(cx - s, cy);
+      ctx.lineTo(cx + s, cy);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.restore();
     };
 
     const animate = () => {
@@ -873,29 +953,73 @@ class ScratchGame {
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
-        p.x += p.vx + Math.sin(p.wobble) * 1.2;
-        p.y += p.vy;
-        p.rot += p.rotSpeed;
-        p.wobble += p.wobbleSpeed;
 
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rot);
+        if (p.type === 'bill') {
+          p.x += p.vx + Math.sin(p.wobble) * p.wobbleAmp;
+          p.y += p.vy;
+          p.rotZ += p.rotSpeedZ;
+          p.rotY += p.rotSpeedY;
+          p.wobble += p.wobbleSpeed;
 
-        if (p.isStar) {
-          drawStar(0, 0, 5, p.w * 0.9, p.w * 0.45, p.color);
-        } else {
-          ctx.fillStyle = p.color;
-          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-        }
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rotZ);
 
-        ctx.restore();
+          const scaleY = Math.cos(p.rotY);
+          const absScaleY = Math.max(0.12, Math.abs(scaleY));
+          ctx.scale(p.scale, p.scale * absScaleY);
 
-        // Recycle particle to top when it falls below screen
-        if (p.y > canvas.height + 25) {
-          p.y = -20;
-          p.x = Math.random() * canvas.width;
-          p.vy = 2 + Math.random() * 3.5;
+          ctx.globalAlpha = p.opacity;
+
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+          ctx.shadowBlur = 6;
+          ctx.shadowOffsetY = 4;
+
+          if (this.moneyBillImg && this.moneyBillImg.complete && this.moneyBillImg.naturalWidth > 0) {
+            ctx.drawImage(this.moneyBillImg, -p.w / 2, -p.h / 2, p.w, p.h);
+          } else {
+            ctx.fillStyle = '#85bb65';
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.strokeStyle = '#2e7d32';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          }
+
+          ctx.restore();
+
+          if (p.y > canvas.height + 40) {
+            p.y = -35;
+            p.x = Math.random() * canvas.width;
+            p.vy = 1.8 + Math.random() * 2.6;
+            p.rotY = Math.random() * Math.PI * 2;
+          }
+        } else if (p.type === 'coin') {
+          p.x += p.vx + Math.sin(p.wobble) * 0.8;
+          p.y += p.vy;
+          p.flip += p.flipSpeed;
+          p.rot += p.rotSpeed;
+          p.wobble += p.wobbleSpeed;
+
+          drawGoldCoin(p.x, p.y, p.radius, p.flip);
+
+          if (p.y > canvas.height + 30) {
+            p.y = -25;
+            p.x = Math.random() * canvas.width;
+            p.vy = 2.0 + Math.random() * 2.8;
+          }
+        } else if (p.type === 'sparkle') {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.pulse += p.pulseSpeed;
+
+          const alpha = 0.4 + Math.sin(p.pulse) * 0.5;
+          drawSparkle(p.x, p.y, p.size, alpha, p.color);
+
+          if (p.y > canvas.height + 20) {
+            p.y = -15;
+            p.x = Math.random() * canvas.width;
+            p.vy = 1.0 + Math.random() * 2.0;
+          }
         }
       }
 
