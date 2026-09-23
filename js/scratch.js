@@ -598,17 +598,10 @@ class ScratchGame {
       this.unlockGodBadge(i);
     }
 
-    // Open Grand Prize Modal
+    // Open Win Voucher Modal with 100$ Grand Prize
     setTimeout(() => {
-      const modal = document.getElementById('modal-grand-win');
-      if (modal) modal.classList.add('active');
-      this.startModalXRay('xray-canvas-grand-win');
-      this.startModalCongrats('congrats-canvas-grand-win');
-
-      const controlsRow = document.getElementById('controls-row');
-      if (controlsRow) {
-        controlsRow.classList.add('active');
-      }
+      const grandCard = CARD_DATA.find(c => c.amount === '100$') || CARD_DATA[1];
+      this.openWinGiftModal(grandCard);
 
       if (window.fbq) {
         fbq('track', 'Purchase', {
