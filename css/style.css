@@ -672,6 +672,307 @@ body {
   }
 }
 
+.popup-wrapper {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 326px;
+  margin: auto;
+}
+
+/* Floating Title Header directly above the Voucher Card */
+.popup-floating-headline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 26px;
+  font-family: 'Kantumruy Pro', sans-serif;
+  font-size: 21px;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 16px rgba(255, 235, 59, 0.95);
+  animation: headline-float 2.2s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.head-star {
+  font-size: 18px;
+  color: #fff59d;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.9));
+}
+
+@keyframes headline-float {
+  0% {
+    transform: translateY(0) scale(0.98);
+  }
+  100% {
+    transform: translateY(-4px) scale(1.02);
+  }
+}
+
+/* 100% Matching Reference Voucher Card Design */
+.popup-voucher-card {
+  position: relative;
+  z-index: 10;
+  width: min(90%, 318px);
+  max-width: 318px;
+  box-sizing: border-box;
+  overflow: visible;
+  /* Rich warm sunrise amber to creamy pearl white background */
+  background: linear-gradient(180deg, 
+    #ff9e1b 0%, 
+    #ffb738 16%, 
+    #ffd55a 32%, 
+    #ffe88a 44%, 
+    #ffffff 58%, 
+    #ffffff 84%, 
+    #fffcf0 100%
+  );
+  border: 2.5px solid rgba(255, 255, 255, 0.95);
+  border-radius: 32px;
+  box-shadow:
+    0 0 0 1px rgba(255, 215, 64, 0.7) inset,
+    0 18px 48px rgba(0, 0, 0, 0.55),
+    0 0 45px rgba(255, 170, 0, 0.45);
+  padding: 44px 18px 22px;
+  text-align: center;
+  color: #4a1200;
+  margin: 0 auto;
+  transform: scale(0.9) translateY(10px);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.25), opacity 0.3s ease;
+}
+
+.modal-overlay.active .popup-voucher-card {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* Top 3D Vouchers Bursting out of Card with Glowing Ring */
+.popup-top-burst {
+  position: absolute;
+  top: -48px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 85px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 12;
+}
+
+.burst-halo-ring {
+  position: absolute;
+  bottom: 6px;
+  width: 104px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 210, 0.95) 0%, rgba(255, 215, 0, 0.75) 45%, rgba(255, 140, 0, 0) 80%);
+  border: 2px solid rgba(255, 255, 180, 0.95);
+  box-shadow: 0 0 22px rgba(255, 215, 0, 0.95), inset 0 0 14px rgba(255, 255, 255, 0.95);
+  transform: rotateX(62deg);
+  animation: ring-pulse 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes ring-pulse {
+  0% {
+    transform: rotateX(62deg) scale(0.95);
+    opacity: 0.8;
+  }
+  100% {
+    transform: rotateX(62deg) scale(1.08);
+    opacity: 1;
+  }
+}
+
+.burst-tickets-wrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.burst-ticket-img {
+  width: 82px;
+  height: 82px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 18px rgba(230, 81, 0, 0.65));
+  animation: burst-ticket-bounce 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes burst-ticket-bounce {
+  0% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  100% {
+    transform: translateY(-6px) rotate(3deg) scale(1.04);
+  }
+}
+
+/* Card Body Content */
+.popup-card-inner {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Speech Bubble Pill Tag */
+.popup-speech-bubble {
+  display: inline-flex;
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 2px;
+  background: #ffffff;
+  border: 1.5px solid #ffcc80;
+  border-radius: 20px;
+  padding: 4px 18px;
+  color: #e65100;
+  font-family: 'Kantumruy Pro', sans-serif;
+  font-size: 13.5px;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.2);
+  letter-spacing: 0.2px;
+}
+
+.speech-arrow {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #ffcc80;
+}
+
+.speech-arrow::after {
+  content: "";
+  position: absolute;
+  bottom: 1.5px;
+  left: -5px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #ffffff;
+}
+
+/* Huge Hero Number Display (e.g. 50$) */
+.popup-hero-amount {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 3px;
+  margin: 2px 0 0;
+}
+
+.amount-number {
+  font-family: 'Outfit', -apple-system, sans-serif;
+  font-size: 70px;
+  font-weight: 900;
+  line-height: 1;
+  color: #ff3d00;
+  background: linear-gradient(180deg, #ff4d00 0%, #e64a19 65%, #c62828 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 0 rgba(255, 255, 255, 0.9));
+}
+
+.amount-currency {
+  font-family: 'Outfit', sans-serif;
+  font-size: 38px;
+  font-weight: 900;
+  color: #ff3d00;
+  background: linear-gradient(180deg, #ff4d00 0%, #e64a19 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Subtitle beneath amount */
+.popup-subtitle {
+  font-family: 'Kantumruy Pro', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #e65100;
+  margin-top: 0;
+  margin-bottom: 16px;
+  opacity: 0.95;
+}
+
+/* Big Pill CTA Button (Matching 2.8元立即购) */
+.popup-pill-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 52px;
+  background: linear-gradient(180deg, #ffa726 0%, #ff9800 45%, #f57c00 100%);
+  border: 2px solid #ffffff;
+  border-radius: 30px;
+  color: #ffffff;
+  font-family: 'Kantumruy Pro', sans-serif;
+  font-size: 17.5px;
+  font-weight: 900;
+  line-height: 1;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(245, 124, 0, 0.6), inset 0 2px 3px rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  animation: pulse-cta 1.3s ease-in-out infinite alternate;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s ease;
+}
+
+.popup-pill-cta:active {
+  transform: scale(0.95);
+}
+
+.cta-price {
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.cta-label {
+  letter-spacing: 0.3px;
+}
+
+.cta-shimmer {
+  position: absolute;
+  top: -50%;
+  left: -80%;
+  width: 45%;
+  height: 200%;
+  background: linear-gradient(90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(255, 255, 255, 0) 100%);
+  transform: rotate(25deg);
+  pointer-events: none;
+  animation: cta-shimmer-pass 3.2s infinite;
+}
+
+@keyframes cta-shimmer-pass {
+  0% { left: -80%; }
+  35% { left: 140%; }
+  100% { left: 140%; }
+}
+
 .modal-dialog {
   position: relative;
   z-index: 10;

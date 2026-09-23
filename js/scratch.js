@@ -492,21 +492,25 @@ class ScratchGame {
     const modal = document.getElementById('modal-win-gift');
     if (!modal) return;
 
-    const tag = document.getElementById('win-gift-tag');
-    const title = document.getElementById('win-gift-title');
+    const headText = document.getElementById('win-gift-head-text');
+    const tagText = document.getElementById('win-gift-tag-text');
     const desc = document.getElementById('win-gift-desc');
     const icon = document.getElementById('win-gift-icon');
-    const amount = document.getElementById('win-gift-amount');
+    const amountNum = document.getElementById('win-gift-amount-num');
     const cta = document.getElementById('win-gift-cta');
+    const ctaPrice = document.getElementById('win-gift-cta-price');
 
-    if (tag) tag.textContent = '🎉 សូមអបអរសាទរ 🎉';
-    if (title) title.textContent = `អ្នកបានឈ្នះ ${card.name}!`;
-    if (desc) desc.textContent = 'សូមចុចទទួលយករង្វាន់របស់អ្នកឥឡូវនេះ';
+    const cleanNum = (card.amount || '50$').replace(/[^0-9]/g, '');
+
+    if (headText) headText.textContent = 'កាតរង្វាន់សំណាង FAFA558';
+    if (tagText) tagText.textContent = `🎉 កាតទឹកប្រាក់រង្វាន់ ${card.name}`;
+    if (desc) desc.textContent = 'ទទួលបានភ្លាមៗ';
     if (icon) {
       icon.src = card.icon;
       icon.alt = card.name;
     }
-    if (amount) amount.textContent = card.amount || card.name;
+    if (amountNum) amountNum.textContent = cleanNum || '50';
+    if (ctaPrice) ctaPrice.textContent = card.amount || `${cleanNum}$`;
     if (cta) {
       cta.setAttribute('data-cta-action', `Claim ${card.name}`);
       cta.href = CONFIG.telegramUrl;

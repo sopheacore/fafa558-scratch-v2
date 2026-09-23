@@ -44,7 +44,7 @@
     <img height="1" width="1" style="display:none"
       src="https://www.facebook.com/tr?id=1360977495406979&ev=PageView&noscript=1" />
   </noscript>
-  <link rel="stylesheet" href="css/style.css?v=47" />
+  <link rel="stylesheet" href="css/style.css?v=49" />
 </head>
 
 <body>
@@ -98,38 +98,70 @@
     <!-- Fullscreen Fireworks Celebration Canvas -->
     <canvas id="fireworks-canvas"></canvas>
 
-    <!-- Modal: Individual Prize Win Celebration (Pops up 1-3s after scratching 10-20%) -->
+    <!-- Modal: Individual Prize Win Celebration (100% Matching Reference Voucher Design) -->
     <div class="modal-overlay" id="modal-win-gift">
       <!-- Dynamic Volumetric God-Rays / X-Ray Canvas -->
       <canvas class="modal-xray-canvas" id="xray-canvas-win-gift"></canvas>
 
-      <!-- Celebration Confetti Shower Canvas -->
+      <!-- Celebration Falling Money Snow Shower Canvas -->
       <canvas class="modal-congrats-canvas" id="congrats-canvas-win-gift"></canvas>
 
-      <div class="modal-dialog">
-        <!-- Celebration Floating Sparkle Stars -->
-        <span class="modal-sparkle-star s1" aria-hidden="true">✨</span>
-        <span class="modal-sparkle-star s2" aria-hidden="true">⭐</span>
-        <span class="modal-sparkle-star s3" aria-hidden="true">✨</span>
-        <span class="modal-sparkle-star s4" aria-hidden="true">🌟</span>
-
-        <button class="modal-close-btn" aria-label="Close">✕</button>
-        <div class="modal-header-tag" id="win-gift-tag">🎉 សូមអបអរសាទរ 🎉</div>
-        <h2 class="modal-title" id="win-gift-title">អ្នកបានឈ្នះរង្វាន់!</h2>
-        <p class="modal-desc" id="win-gift-desc">សូមចុចទទួលយករង្វាន់របស់អ្នកឥឡូវនេះ</p>
-
-        <div class="modal-prize-showcase">
-          <img class="modal-prize-icon" id="win-gift-icon" src="images/ticket_100_grand_pro.png" alt="រង្វាន់" />
-          <div class="modal-prize-amount" id="win-gift-amount">100$</div>
+      <div class="popup-wrapper">
+        <!-- Floating Headline above Card with Glow Stars -->
+        <div class="popup-floating-headline" id="win-gift-headline">
+          <span class="head-star">✨</span>
+          <span class="head-text" id="win-gift-head-text">កាតរង្វាន់សំណាង FAFA558</span>
+          <span class="head-star">✨</span>
         </div>
 
-        <a class="modal-cta-btn" id="win-gift-cta" href="https://t.me/fafa558kh_bot?start=minigame" target="_blank"
-          data-cta-action="Claim Prize">
-          🎁 ទទួលយករង្វាន់ឥឡូវនេះ
-        </a>
-        <button class="modal-retry-btn" id="win-gift-retry" type="button">
-          🔄 សាកល្បងលេងម្តងទៀត
-        </button>
+        <div class="modal-dialog popup-voucher-card">
+          <!-- Celebration Floating Sparkle Stars -->
+          <span class="modal-sparkle-star s1" aria-hidden="true">✨</span>
+          <span class="modal-sparkle-star s2" aria-hidden="true">⭐</span>
+          <span class="modal-sparkle-star s3" aria-hidden="true">✨</span>
+          <span class="modal-sparkle-star s4" aria-hidden="true">🌟</span>
+
+          <button class="modal-close-btn" aria-label="Close">✕</button>
+
+          <!-- Bursting 3D Vouchers / Gift Tickets with Glowing Energy Ring -->
+          <div class="popup-top-burst">
+            <div class="burst-halo-ring"></div>
+            <div class="burst-tickets-wrap">
+              <img class="burst-ticket-img" id="win-gift-icon" src="images/ticket_50_cash_pro.png" alt="រង្វាន់" />
+            </div>
+          </div>
+
+          <!-- Card Body Content -->
+          <div class="popup-card-inner">
+            <!-- Speech Bubble Pill Tag -->
+            <div class="popup-speech-bubble" id="win-gift-tag">
+              <span id="win-gift-tag-text">🎉 កាតទឹកប្រាក់រង្វាន់ភ្លាមៗ</span>
+              <div class="speech-arrow"></div>
+            </div>
+
+            <!-- Huge Hero Amount Display -->
+            <div class="popup-hero-amount">
+              <span class="amount-number" id="win-gift-amount-num">50</span>
+              <span class="amount-currency">$</span>
+            </div>
+
+            <!-- Subtitle -->
+            <div class="popup-subtitle" id="win-gift-desc">ទទួលបានភ្លាមៗ</div>
+
+            <!-- Big Pill CTA Button -->
+            <a class="popup-pill-cta" id="win-gift-cta" href="https://t.me/fafa558kh_bot?start=minigame" target="_blank"
+              data-cta-action="Claim Prize">
+              <span class="cta-price" id="win-gift-cta-price">50$</span>
+              <span class="cta-label">ទទួលយកភ្លាមៗ</span>
+              <div class="cta-shimmer"></div>
+            </a>
+
+            <!-- Secondary Retry Button -->
+            <button class="modal-retry-btn" id="win-gift-retry" type="button">
+              🔄 សាកល្បងលេងម្តងទៀត
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -206,7 +238,7 @@
 
   </div> <!-- End Mobile Stage (9:16) -->
 
-  <script src="js/scratch.js?v=47"></script>
+  <script src="js/scratch.js?v=49"></script>
 </body>
 
 </html>
