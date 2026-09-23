@@ -4,7 +4,7 @@
  */
 
 const CONFIG = {
-  telegramUrl: 'https://t.me/fafa558kh_bot?start=minigame',
+  telegramUrl: 'https://t.me/fafa558kh01_bot?start=minigame',
   pixelId1: '1049062040632358',
   pixelId2: '1360977495406979',
   brandName: 'FAFA558'
