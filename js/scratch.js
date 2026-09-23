@@ -59,12 +59,6 @@ class ScratchGame {
   initUI() {
 
 
-    // More info button
-    const moreBtn = document.querySelector('.nav-btn-more');
-    if (moreBtn) {
-      moreBtn.addEventListener('click', () => this.openWelfareModal());
-    }
-
     // Auto-play background video
     const video = document.getElementById('hero-gods-video');
     if (video) {
@@ -87,24 +81,6 @@ class ScratchGame {
         this.resetGame();
       });
     });
-
-    // "我的奖品" (My Prizes) Button
-    const myPrizeBtn = document.getElementById('btn-my-prize');
-    if (myPrizeBtn) {
-      myPrizeBtn.addEventListener('click', () => this.openMyPrizesModal());
-    }
-
-    // "年中福利包" (Mid-Year Welfare) Button
-    const welfareBtn = document.getElementById('btn-welfare');
-    if (welfareBtn) {
-      welfareBtn.addEventListener('click', () => this.openWelfareModal());
-    }
-
-    // Bottom Promo Card
-    const bottomPromo = document.getElementById('bottom-promo-card');
-    if (bottomPromo) {
-      bottomPromo.addEventListener('click', () => this.handleConversionClick('Bottom Promo Banner'));
-    }
 
     // Modal Close Buttons
     document.querySelectorAll('.modal-close-btn').forEach(btn => {
@@ -642,39 +618,6 @@ class ScratchGame {
         });
       }
     }, 900);
-  }
-
-  openMyPrizesModal() {
-    const modal = document.getElementById('modal-my-prizes');
-    const container = document.getElementById('prizes-list-content');
-    if (!modal || !container) return;
-
-    container.innerHTML = '';
-    if (this.revealedCards.size === 0) {
-      container.innerHTML = '<div style="text-align:center; padding: 20px; color:#888;">មិនទាន់បានកោសរង្វាន់ណាមួយទេ សូមចុចកោសឥឡូវនេះ!</div>';
-    } else {
-      CARD_DATA.forEach(card => {
-        if (this.revealedCards.has(card.id)) {
-          const row = document.createElement('div');
-          row.className = 'prize-item-row';
-          row.innerHTML = `
-            <div class="prize-item-left">
-              <img class="prize-item-thumb" src="${card.icon}" alt="${card.name}">
-              <span class="prize-item-name">${card.name}</span>
-            </div>
-            <span class="prize-item-status">ទទួលបានហើយ ✓</span>
-          `;
-          container.appendChild(row);
-        }
-      });
-    }
-
-    modal.classList.add('active');
-  }
-
-  openWelfareModal() {
-    const modal = document.getElementById('modal-welfare');
-    if (modal) modal.classList.add('active');
   }
 
   handleConversionClick(eventName) {
