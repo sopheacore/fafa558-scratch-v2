@@ -28,6 +28,7 @@ class ScratchGame {
     this.revealedCards = new Set();
     this.unlockedGods = 0;
     this.isAutoScratching = false;
+    this.isLocked = false;
 
     // Preload Money Bill banknote image for money rain/snow celebration
     this.moneyBillImg = new Image();
@@ -67,33 +68,33 @@ class ScratchGame {
       document.addEventListener('click', () => video.play().catch(() => {}), { once: true });
     }
 
-    // Stage Play Again Button
+    // Stage Play Again / Start Button
     const scratchBtn = document.getElementById('btn-auto-scratch');
     if (scratchBtn) {
       scratchBtn.addEventListener('click', () => {
-        this.resetGame();
+        this.unlockAndStartGame();
       });
     }
 
-    // Modal Retry / Play Again Buttons
+    // Modal Retry / Play Again Buttons (if any)
     document.querySelectorAll('.modal-retry-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        this.resetGame();
+        this.unlockAndStartGame();
       });
     });
 
-    // Modal Close Buttons
+    // Modal Close Buttons (✕) -> Prepare fresh replay with Try Again button
     document.querySelectorAll('.modal-close-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.resetGame();
+      btn.addEventListener('click', () => {
+        this.prepareReplay();
       });
     });
 
-    // Close modal when clicking dark backdrop
+    // Close modal when clicking dark backdrop -> Prepare fresh replay with Try Again button
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
       overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
-          this.resetGame();
+          this.prepareReplay();
         }
       });
     });
@@ -268,7 +269,7 @@ class ScratchGame {
     };
 
     const start = (e) => {
-      if (this.revealedCards.has(card.id)) return;
+      if (this.isLocked || this.revealedCards.has(card.id)) return;
       if (e.cancelable) e.preventDefault();
       isDrawing = true;
       lastPoint = getPos(e);
@@ -276,7 +277,7 @@ class ScratchGame {
     };
 
     const move = (e) => {
-      if (!isDrawing || this.revealedCards.has(card.id)) return;
+      if (!isDrawing || this.isLocked || this.revealedCards.has(card.id)) return;
       if (e.cancelable) e.preventDefault();
       const pos = getPos(e);
       scratch(pos);
@@ -497,12 +498,6 @@ class ScratchGame {
     this.startModalXRay('xray-canvas-win-gift');
     this.startModalCongrats('congrats-canvas-win-gift');
 
-    // Reveal stage "Play Again" button after scratching & win popup
-    const controlsRow = document.getElementById('controls-row');
-    if (controlsRow) {
-      controlsRow.classList.add('active');
-    }
-
     if (window.fbq) {
       fbq('trackCustom', 'Win_Prize', {
         prize_name: card.name,
@@ -524,7 +519,7 @@ class ScratchGame {
     }
   }
 
-  resetGame() {
+  prepareReplay() {
     this.revealedCards.clear();
     this.unlockedGods = 0;
     this.isAutoScratching = false;
@@ -546,19 +541,41 @@ class ScratchGame {
       }
     }
 
-    // Close any active modal
+    // Close active modal
     document.querySelectorAll('.modal-overlay').forEach(modal => {
       modal.classList.remove('active');
     });
 
-    // Re-initialize scratch slots cleanly
+    // Re-initialize scratch slots cleanly (fresh unscratched gold cards)
     this.initSlots();
 
-    // Hide stage "Play Again" button so fresh game has no button
+    // Lock scratch grid so cards cannot be scratched until player clicks Try Again button
+    const grid = document.getElementById('scratch-grid');
+    if (grid) grid.classList.add('locked');
+    this.isLocked = true;
+
+    // Show Try Again button prominently on stage
+    const controlsRow = document.getElementById('controls-row');
+    if (controlsRow) {
+      controlsRow.classList.add('active');
+    }
+  }
+
+  unlockAndStartGame() {
+    // Unlock scratch board
+    const grid = document.getElementById('scratch-grid');
+    if (grid) grid.classList.remove('locked');
+    this.isLocked = false;
+
+    // Hide Try Again button so player can play cleanly
     const controlsRow = document.getElementById('controls-row');
     if (controlsRow) {
       controlsRow.classList.remove('active');
     }
+  }
+
+  resetGame() {
+    this.prepareReplay();
   }
 
   autoScratchAll() {

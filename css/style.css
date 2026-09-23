@@ -226,6 +226,11 @@ body {
   justify-items: center;
 }
 
+.scratch-grid.locked {
+  pointer-events: none;
+  cursor: default;
+}
+
 .card-slot {
   position: relative;
   width: 89%;
