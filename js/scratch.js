@@ -10,14 +10,14 @@ const CONFIG = {
   brandName: 'FAFA558'
 };
 
-// 6 Cards Definition using new Angpao assets (50$ and 100$ only)
+// 6 Cards Definition using new Angpao assets (20$, 50$, 100$)
 const CARD_DATA = [
-  { id: 1, name: 'អាំងប៉ាវ 50$', amount: '50$', icon: 'images/angpao_50.webp', type: 'gold', godIndex: 1 },
-  { id: 2, name: 'អាំងប៉ាវ 100$', amount: '100$', icon: 'images/angpao_100.webp', type: 'grand', isGrand: true, godIndex: 2 },
-  { id: 3, name: 'អាំងប៉ាវ 50$', amount: '50$', icon: 'images/angpao_50.webp', type: 'cash', godIndex: 3 },
-  { id: 4, name: 'អាំងប៉ាវ 100$', amount: '100$', icon: 'images/angpao_100.webp', type: 'gold', godIndex: 4 },
-  { id: 5, name: 'អាំងប៉ាវ 50$', amount: '50$', icon: 'images/angpao_50.webp', type: 'god', godIndex: 5 },
-  { id: 6, name: 'អាំងប៉ាវ 100$', amount: '100$', icon: 'images/angpao_100.webp', type: 'cash', isGrand: true }
+  { id: 1, name: 'អាំងប៉ាវ 20$', amount: '20$', icon: 'images/angpao_20.webp', type: 'gold', godIndex: 1 },
+  { id: 2, name: 'អាំងប៉ាវ 50$', amount: '50$', icon: 'images/angpao_50.webp', type: 'cash', godIndex: 2 },
+  { id: 3, name: 'អាំងប៉ាវ 100$', amount: '100$', icon: 'images/angpao_100.webp', type: 'grand', isGrand: true, godIndex: 3 },
+  { id: 4, name: 'អាំងប៉ាវ 20$', amount: '20$', icon: 'images/angpao_20.webp', type: 'gold', godIndex: 4 },
+  { id: 5, name: 'អាំងប៉ាវ 50$', amount: '50$', icon: 'images/angpao_50.webp', type: 'cash', godIndex: 5 },
+  { id: 6, name: 'អាំងប៉ាវ 100$', amount: '100$', icon: 'images/angpao_100.webp', type: 'grand', isGrand: true }
 ];
 
 
@@ -505,7 +505,7 @@ class ScratchGame {
         card_id: card.id
       });
       fbq('track', 'Purchase', {
-        value: card.amount === '100$' ? 100.00 : 50.00,
+        value: card.amount === '100$' ? 100.00 : (card.amount === '50$' ? 50.00 : 20.00),
         currency: 'USD',
         content_name: `Win ${card.name}`
       });
