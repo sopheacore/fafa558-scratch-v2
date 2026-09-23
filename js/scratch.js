@@ -12,12 +12,12 @@ const CONFIG = {
 
 // 6 Cards Definition using new Angpao assets (50$ and 100$ only)
 const CARD_DATA = [
-  { id: 1, name: 'អាំងប៉ាវ 50$', amount: '50$', icon: 'images/angpao_50.png', type: 'gold', godIndex: 1 },
-  { id: 2, name: 'អាំងប៉ាវ 100$', amount: '100$', icon: 'images/angpao_100.png', type: 'grand', isGrand: true, godIndex: 2 },
-  { id: 3, name: 'អាំងប៉ាវ 50$', amount: '50$', icon: 'images/angpao_50.png', type: 'cash', godIndex: 3 },
-  { id: 4, name: 'អាំងប៉ាវ 100$', amount: '100$', icon: 'images/angpao_100.png', type: 'gold', godIndex: 4 },
-  { id: 5, name: 'អាំងប៉ាវ 50$', amount: '50$', icon: 'images/angpao_50.png', type: 'god', godIndex: 5 },
-  { id: 6, name: 'អាំងប៉ាវ 100$', amount: '100$', icon: 'images/angpao_100.png', type: 'cash', isGrand: true }
+  { id: 1, name: 'អាំងប៉ាវ 50$', amount: '50$', icon: 'images/angpao_50.webp', type: 'gold', godIndex: 1 },
+  { id: 2, name: 'អាំងប៉ាវ 100$', amount: '100$', icon: 'images/angpao_100.webp', type: 'grand', isGrand: true, godIndex: 2 },
+  { id: 3, name: 'អាំងប៉ាវ 50$', amount: '50$', icon: 'images/angpao_50.webp', type: 'cash', godIndex: 3 },
+  { id: 4, name: 'អាំងប៉ាវ 100$', amount: '100$', icon: 'images/angpao_100.webp', type: 'gold', godIndex: 4 },
+  { id: 5, name: 'អាំងប៉ាវ 50$', amount: '50$', icon: 'images/angpao_50.webp', type: 'god', godIndex: 5 },
+  { id: 6, name: 'អាំងប៉ាវ 100$', amount: '100$', icon: 'images/angpao_100.webp', type: 'cash', isGrand: true }
 ];
 
 
@@ -32,11 +32,11 @@ class ScratchGame {
 
     // Preload Money Bill banknote image for money rain/snow celebration
     this.moneyBillImg = new Image();
-    this.moneyBillImg.src = 'images/money_bill.png';
+    this.moneyBillImg.src = 'images/money_bill.webp';
 
     // Authentic FAFA558 circular stamp image
     this.stampImg = new Image();
-    this.stampImg.src = 'images/stamp_circle-new.png';
+    this.stampImg.src = 'images/stamp_circle-new.webp';
     this.stampReady = false;
     this.stampImg.onload = () => {
       this.stampReady = true;
@@ -478,7 +478,7 @@ class ScratchGame {
     if (tagText) tagText.textContent = 'សូមអបអរសាទរ';
     if (desc) desc.textContent = 'ទទួលបានភ្លាមៗ';
     if (icon) {
-      icon.src = 'images/popup_tickets_ring.png';
+      icon.src = 'images/popup_tickets_ring.webp';
       icon.alt = 'កាតរង្វាន់';
     }
     if (amountNum) amountNum.textContent = cleanNum || '50';
@@ -779,7 +779,7 @@ class ScratchGame {
 
     if (!this.moneyBillImg) {
       this.moneyBillImg = new Image();
-      this.moneyBillImg.src = 'images/money_bill.png';
+      this.moneyBillImg.src = 'images/money_bill.webp';
     }
 
     const billAspect = 192 / 432; // height / width
