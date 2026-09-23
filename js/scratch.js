@@ -1062,65 +1062,64 @@ class ScratchGame {
     const cy = canvas.height * 0.48; // Centered right behind the prize showcase box
     const maxRadius = Math.hypot(canvas.width, canvas.height) * 1.05;
 
-    // FAFA Brand Colors: Radiant Solar Gold, Champagne Diamond, Brilliant White, Deep Amber
-    // Layer 1: Clockwise Majestic God-Rays (Alternating Wide Volumetric Shafts & Intense Beams)
+    // FAFA Brand Soft Luxury Colors: Warm Solar Gold, Soft Champagne, Amber Glow
+    // Layer 1: Clockwise Soft Golden God-Rays (Volumetric subtle beams)
     const primaryRays = [];
-    const primaryCount = 24;
+    const primaryCount = 20;
     const primaryColors = [
-      '255, 225, 40',   // Solar Gold
-      '255, 248, 170',  // Champagne Diamond
-      '255, 200, 20',   // Royal Gold
-      '255, 255, 255',  // Pure Diamond White
-      '255, 175, 10'    // Deep Amber
+      '255, 215, 60',   // Warm Gold
+      '255, 235, 140',  // Soft Champagne
+      '255, 190, 40',   // Rich Amber
+      '255, 245, 180',  // Cream Gold
+      '255, 170, 30'    // Deep Warm Gold
     ];
     for (let i = 0; i < primaryCount; i++) {
-      const isMajestic = (i % 3 === 0);
-      const isNeedle = (i % 3 === 2);
+      const isMajestic = (i % 2 === 0);
       primaryRays.push({
         baseAngle: (i / primaryCount) * Math.PI * 2,
-        angularSpan: isMajestic ? 0.22 : (isNeedle ? 0.05 : 0.12),
+        angularSpan: isMajestic ? 0.18 : 0.09,
         color: primaryColors[i % primaryColors.length],
-        baseAlpha: isMajestic ? 0.48 : (isNeedle ? 0.65 : 0.40),
-        pulseSpeed: 0.003 + Math.random() * 0.003,
+        baseAlpha: isMajestic ? 0.18 : 0.12,
+        pulseSpeed: 0.002 + Math.random() * 0.002,
         pulseOffset: Math.random() * Math.PI * 2,
         reachFactor: 0.95 + Math.random() * 0.2
       });
     }
 
-    // Layer 2: Counter-Clockwise Diamond Crystalline Light Beams
+    // Layer 2: Counter-Clockwise Gentle Radiant Light Beams
     const secondaryRays = [];
-    const secondaryCount = 18;
+    const secondaryCount = 14;
     const secondaryColors = [
-      '255, 255, 255',  // Pure Diamond
-      '255, 240, 150',  // Light Gold
-      '230, 245, 255'   // Platinum Shimmer
+      '255, 240, 160',  // Soft Light Gold
+      '255, 220, 100',  // Amber Ray
+      '255, 250, 200'   // Warm Diamond
     ];
     for (let i = 0; i < secondaryCount; i++) {
       secondaryRays.push({
-        baseAngle: (i / secondaryCount) * Math.PI * 2 + 0.18,
-        angularSpan: (i % 2 === 0 ? 0.06 : 0.11),
+        baseAngle: (i / secondaryCount) * Math.PI * 2 + 0.22,
+        angularSpan: (i % 2 === 0 ? 0.07 : 0.12),
         color: secondaryColors[i % secondaryColors.length],
-        baseAlpha: 0.35 + Math.random() * 0.25,
-        pulseSpeed: 0.004 + Math.random() * 0.003,
+        baseAlpha: 0.10 + Math.random() * 0.08,
+        pulseSpeed: 0.0025 + Math.random() * 0.002,
         pulseOffset: Math.random() * Math.PI * 2,
-        reachFactor: 0.85 + Math.random() * 0.25
+        reachFactor: 0.85 + Math.random() * 0.2
       });
     }
 
     // Layer 3: Floating Golden Stardust & Twinkle Stars
     const motes = [];
-    const moteCount = 36;
+    const moteCount = 24;
     for (let i = 0; i < moteCount; i++) {
       motes.push({
         x: cx + (Math.random() - 0.5) * canvas.width * 0.95,
         y: cy + (Math.random() - 0.5) * canvas.height * 0.95,
-        vx: (Math.random() - 0.5) * 0.7,
-        vy: -0.8 - Math.random() * 1.3,
-        size: 2.5 + Math.random() * 4.5,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: -0.5 - Math.random() * 0.8,
+        size: 2.0 + Math.random() * 3.5,
         rot: Math.random() * Math.PI,
-        rotSpeed: (Math.random() - 0.5) * 0.05,
+        rotSpeed: (Math.random() - 0.5) * 0.03,
         color: Math.random() < 0.6 ? '#ffd700' : (Math.random() < 0.85 ? '#ffffff' : '#ffb700'),
-        alpha: 0.4 + Math.random() * 0.6,
+        alpha: 0.3 + Math.random() * 0.4,
         phase: Math.random() * Math.PI * 2
       });
     }
@@ -1160,32 +1159,57 @@ class ScratchGame {
       }
 
       const elapsed = now - startTime;
-      rotCW += 0.007;   // Clockwise rotation (lively & smooth)
-      rotCCW -= 0.0055; // Counter-clockwise rotation
+      rotCW += 0.0035;   // Slower, calmer rotation
+      rotCCW -= 0.0028;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Additive blend mode for heavenly, high-intensity luminous glow!
+      // Additive blend mode for luminous ambient glow
       ctx.globalCompositeOperation = 'lighter';
 
-      // 1. Central Celestial Supernova Halo (Bathes dark background in rich warm gold)
-      const corePulse = 1 + 0.16 * Math.sin(elapsed * 0.005);
+      // 1. Central Celestial Supernova Halo (Soft warm ambient backdrop)
+      const corePulse = 1 + 0.10 * Math.sin(elapsed * 0.003);
       const coreRadius = Math.max(canvas.width, canvas.height) * 0.55 * corePulse;
       const coreGrad = ctx.createRadialGradient(cx, cy, 10, cx, cy, coreRadius);
-      coreGrad.addColorStop(0, 'rgba(255, 255, 240, 0.85)');
-      coreGrad.addColorStop(0.2, 'rgba(255, 225, 60, 0.50)');
-      coreGrad.addColorStop(0.45, 'rgba(255, 170, 20, 0.25)');
-      coreGrad.addColorStop(0.75, 'rgba(255, 120, 0, 0.10)');
+      coreGrad.addColorStop(0, 'rgba(255, 245, 210, 0.45)');
+      coreGrad.addColorStop(0.25, 'rgba(255, 215, 60, 0.22)');
+      coreGrad.addColorStop(0.55, 'rgba(255, 160, 20, 0.10)');
+      coreGrad.addColorStop(0.85, 'rgba(255, 120, 0, 0.03)');
       coreGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = coreGrad;
       ctx.beginPath();
       ctx.arc(cx, cy, coreRadius, 0, Math.PI * 2);
       ctx.fill();
 
-      // 2. Layer 1: Clockwise Golden Sunburst God-Rays
+      // 2. Layer 1: Clockwise Soft Golden God-Rays
       for (let i = 0; i < primaryRays.length; i++) {
         const r = primaryRays[i];
         const aCenter = r.baseAngle + rotCW;
+        const halfSpan = r.angularSpan / 2;
+        const aStart = aCenter - halfSpan;
+        const aEnd = aCenter + halfSpan;
+        const pulse = 0.85 + 0.2 * Math.sin(elapsed * r.pulseSpeed + r.pulseOffset);
+        const currentAlpha = r.baseAlpha * pulse;
+
+        const rayDist = maxRadius * r.reachFactor;
+        const rayGrad = ctx.createRadialGradient(cx, cy, 30, cx, cy, rayDist);
+        rayGrad.addColorStop(0, `rgba(${r.color}, ${Math.min(1, currentAlpha * 1.3)})`);
+        rayGrad.addColorStop(0.3, `rgba(${r.color}, ${currentAlpha})`);
+        rayGrad.addColorStop(0.7, `rgba(${r.color}, ${currentAlpha * 0.35})`);
+        rayGrad.addColorStop(1, `rgba(${r.color}, 0)`);
+
+        ctx.fillStyle = rayGrad;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, rayDist, aStart, aEnd);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // 3. Layer 2: Counter-Clockwise Gentle Radiant Light Beams
+      for (let i = 0; i < secondaryRays.length; i++) {
+        const r = secondaryRays[i];
+        const aCenter = r.baseAngle + rotCCW;
         const halfSpan = r.angularSpan / 2;
         const aStart = aCenter - halfSpan;
         const aEnd = aCenter + halfSpan;
@@ -1193,35 +1217,10 @@ class ScratchGame {
         const currentAlpha = r.baseAlpha * pulse;
 
         const rayDist = maxRadius * r.reachFactor;
-        const rayGrad = ctx.createRadialGradient(cx, cy, 30, cx, cy, rayDist);
-        rayGrad.addColorStop(0, `rgba(${r.color}, ${Math.min(1, currentAlpha * 1.4)})`);
-        rayGrad.addColorStop(0.3, `rgba(${r.color}, ${currentAlpha})`);
-        rayGrad.addColorStop(0.65, `rgba(${r.color}, ${currentAlpha * 0.45})`);
-        rayGrad.addColorStop(1, `rgba(${r.color}, 0)`);
-
-        ctx.fillStyle = rayGrad;
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, rayDist, aStart, aEnd);
-        ctx.closePath();
-        ctx.fill();
-      }
-
-      // 3. Layer 2: Counter-Clockwise Diamond Crystalline Light Beams
-      for (let i = 0; i < secondaryRays.length; i++) {
-        const r = secondaryRays[i];
-        const aCenter = r.baseAngle + rotCCW;
-        const halfSpan = r.angularSpan / 2;
-        const aStart = aCenter - halfSpan;
-        const aEnd = aCenter + halfSpan;
-        const pulse = 0.75 + 0.3 * Math.sin(elapsed * r.pulseSpeed + r.pulseOffset);
-        const currentAlpha = r.baseAlpha * pulse;
-
-        const rayDist = maxRadius * r.reachFactor;
         const rayGrad = ctx.createRadialGradient(cx, cy, 25, cx, cy, rayDist);
-        rayGrad.addColorStop(0, `rgba(${r.color}, ${Math.min(1, currentAlpha * 1.5)})`);
+        rayGrad.addColorStop(0, `rgba(${r.color}, ${Math.min(1, currentAlpha * 1.3)})`);
         rayGrad.addColorStop(0.35, `rgba(${r.color}, ${currentAlpha})`);
-        rayGrad.addColorStop(0.75, `rgba(${r.color}, ${currentAlpha * 0.35})`);
+        rayGrad.addColorStop(0.75, `rgba(${r.color}, ${currentAlpha * 0.3})`);
         rayGrad.addColorStop(1, `rgba(${r.color}, 0)`);
 
         ctx.fillStyle = rayGrad;
@@ -1232,17 +1231,17 @@ class ScratchGame {
         ctx.fill();
       }
 
-      // 4. Cinematic Anamorphic Horizontal Flare (Hollywood Movie-Grade Center Gleam)
-      const anamorphicPulse = 1 + 0.2 * Math.sin(elapsed * 0.006);
-      const anamorphicWidth = canvas.width * 1.15;
-      const anamorphicHeight = 24 * anamorphicPulse;
+      // 4. Subtle Anamorphic Center Horizontal Flare
+      const anamorphicPulse = 1 + 0.15 * Math.sin(elapsed * 0.004);
+      const anamorphicWidth = canvas.width * 1.1;
+      const anamorphicHeight = 16 * anamorphicPulse;
       ctx.save();
       ctx.translate(cx, cy);
-      ctx.rotate(Math.sin(elapsed * 0.001) * 0.08); // Subtle cinematic breathe tilt
+      ctx.rotate(Math.sin(elapsed * 0.001) * 0.05);
       const anamGrad = ctx.createRadialGradient(0, 0, 4, 0, 0, anamorphicWidth / 2);
-      anamGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
-      anamGrad.addColorStop(0.2, 'rgba(255, 230, 120, 0.65)');
-      anamGrad.addColorStop(0.5, 'rgba(255, 180, 40, 0.25)');
+      anamGrad.addColorStop(0, 'rgba(255, 255, 255, 0.55)');
+      anamGrad.addColorStop(0.2, 'rgba(255, 230, 120, 0.30)');
+      anamGrad.addColorStop(0.6, 'rgba(255, 180, 40, 0.08)');
       anamGrad.addColorStop(1, 'rgba(255, 180, 40, 0)');
       ctx.fillStyle = anamGrad;
       ctx.scale(1, anamorphicHeight / (anamorphicWidth / 2));
@@ -1251,21 +1250,20 @@ class ScratchGame {
       ctx.fill();
       ctx.restore();
 
-      // 5. Central 8-Point Lens Flare Stars (Dual Counter-Rotating Diamond Glints)
-      const flarePulse = 1 + 0.2 * Math.sin(elapsed * 0.006);
-      const flareSize = 160 * flarePulse;
-      drawFlareStar(cx, cy, flareSize, rotCW * 0.7, '#fff1a8', 0.45, 8, 0.15);
-      drawFlareStar(cx, cy, flareSize * 0.72, rotCCW * 0.7 + 0.39, '#ffffff', 0.40, 8, 0.12);
+      // 5. Central Soft 8-Point Lens Flare Star
+      const flarePulse = 1 + 0.15 * Math.sin(elapsed * 0.004);
+      const flareSize = 130 * flarePulse;
+      drawFlareStar(cx, cy, flareSize, rotCW * 0.5, '#fff1a8', 0.22, 8, 0.15);
 
-      // 6. Expanding Concentric Golden Energy Shockwave Rings
-      if (elapsed - lastRingTime > 1000) {
-        rings.push({ radius: 30, maxRadius: Math.max(canvas.width, canvas.height) * 0.75, alpha: 0.55 });
+      // 6. Expanding Soft Concentric Energy Shockwave Rings
+      if (elapsed - lastRingTime > 1400) {
+        rings.push({ radius: 30, maxRadius: Math.max(canvas.width, canvas.height) * 0.75, alpha: 0.25 });
         lastRingTime = elapsed;
       }
 
       for (let i = rings.length - 1; i >= 0; i--) {
         const ring = rings[i];
-        ring.radius += 3.6;
+        ring.radius += 2.8;
         const progress = ring.radius / ring.maxRadius;
         const ringAlpha = ring.alpha * (1 - progress);
 
@@ -1275,19 +1273,19 @@ class ScratchGame {
         }
 
         ctx.strokeStyle = `rgba(255, 230, 100, ${ringAlpha})`;
-        ctx.lineWidth = 2.6 * (1 - progress * 0.5);
+        ctx.lineWidth = 1.8 * (1 - progress * 0.5);
         ctx.beginPath();
         ctx.arc(cx, cy, ring.radius, 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      // 7. Floating 4-Pointed Golden & Diamond Twinkle Stars
+      // 7. Floating 4-Pointed Golden Twinkle Stars
       for (let i = 0; i < motes.length; i++) {
         const m = motes[i];
         m.x += m.vx;
         m.y += m.vy;
         m.rot += m.rotSpeed;
-        m.phase += 0.06;
+        m.phase += 0.04;
         const twinkle = 0.4 + 0.6 * Math.sin(m.phase);
 
         drawFlareStar(m.x, m.y, m.size * (0.8 + 0.35 * twinkle), m.rot, m.color, m.alpha * twinkle, 4, 0.2);

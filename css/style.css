@@ -610,6 +610,7 @@ body {
   height: 100%;
   pointer-events: none;
   z-index: 1;
+  opacity: 0.55;
 }
 
 /* Celebration Confetti Shower Canvas (behind dialog) */
