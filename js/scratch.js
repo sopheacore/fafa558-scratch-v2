@@ -503,11 +503,11 @@ class ScratchGame {
     const cleanNum = (card.amount || '50$').replace(/[^0-9]/g, '');
 
     if (headText) headText.textContent = 'កាតរង្វាន់សំណាង FAFA558';
-    if (tagText) tagText.textContent = `🎉 កាតទឹកប្រាក់រង្វាន់ ${card.name}`;
+    if (tagText) tagText.textContent = 'កាតទឹកប្រាក់រង្វាន់ភ្លាមៗ';
     if (desc) desc.textContent = 'ទទួលបានភ្លាមៗ';
     if (icon) {
-      icon.src = card.icon;
-      icon.alt = card.name;
+      icon.src = 'images/popup_tickets_ring.png';
+      icon.alt = 'កាតរង្វាន់';
     }
     if (amountNum) amountNum.textContent = cleanNum || '50';
     if (ctaPrice) ctaPrice.textContent = card.amount || `${cleanNum}$`;
