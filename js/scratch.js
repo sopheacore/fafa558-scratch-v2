@@ -85,10 +85,7 @@ class ScratchGame {
     // Modal Close Buttons
     document.querySelectorAll('.modal-close-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const modal = e.target.closest('.modal-overlay');
-        if (modal) modal.classList.remove('active');
-        this.stopModalCongrats();
-        this.stopModalXRay();
+        this.resetGame();
       });
     });
 
@@ -96,9 +93,7 @@ class ScratchGame {
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
       overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
-          overlay.classList.remove('active');
-          this.stopModalCongrats();
-          this.stopModalXRay();
+          this.resetGame();
         }
       });
     });
