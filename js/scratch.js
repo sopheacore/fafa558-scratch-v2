@@ -503,14 +503,16 @@ class ScratchGame {
     const cleanNum = (card.amount || '50$').replace(/[^0-9]/g, '');
 
     if (headText) headText.textContent = 'កាតរង្វាន់សំណាង FAFA558';
-    if (tagText) tagText.textContent = 'កាតទឹកប្រាក់រង្វាន់ភ្លាមៗ';
+    if (tagText) tagText.textContent = 'សូមអបអរសាទរ';
     if (desc) desc.textContent = 'ទទួលបានភ្លាមៗ';
     if (icon) {
       icon.src = 'images/popup_tickets_ring.png';
       icon.alt = 'កាតរង្វាន់';
     }
     if (amountNum) amountNum.textContent = cleanNum || '50';
-    if (ctaPrice) ctaPrice.textContent = card.amount || `${cleanNum}$`;
+    const ctaLabel = document.getElementById('win-gift-cta-label');
+    if (ctaLabel) ctaLabel.textContent = 'ចុចទាមទាររង្វាន់';
+    if (ctaPrice) ctaPrice.textContent = '';
     if (cta) {
       cta.setAttribute('data-cta-action', `Claim ${card.name}`);
       cta.href = CONFIG.telegramUrl;
