@@ -10,14 +10,14 @@ const CONFIG = {
   brandName: 'FAFA558'
 };
 
-// 6 Cards Definition with Renewed Khmer 3D Gift Assets (50$ and 100$ only)
+// 6 Cards Definition using new Angpao assets (50$ and 100$ only)
 const CARD_DATA = [
-  { id: 1, name: 'រង្វាន់ 50$', amount: '50$', icon: 'images/ticket_50_gold_pro.png', type: 'gold', godIndex: 1 },
-  { id: 2, name: 'រង្វាន់ 100$', amount: '100$', icon: 'images/ticket_100_grand_pro.png', type: 'grand', isGrand: true, godIndex: 2 },
-  { id: 3, name: 'រង្វាន់ 50$', amount: '50$', icon: 'images/ticket_50_cash_pro.png', type: 'cash', godIndex: 3 },
-  { id: 4, name: 'រង្វាន់ 100$', amount: '100$', icon: 'images/ticket_100_gold_pro.png', type: 'gold', godIndex: 4 },
-  { id: 5, name: 'រង្វាន់ 50$', amount: '50$', icon: 'images/ticket_50_god_pro.png', type: 'god', godIndex: 5 },
-  { id: 6, name: 'រង្វាន់ 100$', amount: '100$', icon: 'images/ticket_100_cash_pro.png', type: 'cash', isGrand: true }
+  { id: 1, name: 'អាំងប៉ាវ 50$', amount: '50$', icon: 'images/angpao_50.png', type: 'gold', godIndex: 1 },
+  { id: 2, name: 'អាំងប៉ាវ 100$', amount: '100$', icon: 'images/angpao_100.png', type: 'grand', isGrand: true, godIndex: 2 },
+  { id: 3, name: 'អាំងប៉ាវ 50$', amount: '50$', icon: 'images/angpao_50.png', type: 'cash', godIndex: 3 },
+  { id: 4, name: 'អាំងប៉ាវ 100$', amount: '100$', icon: 'images/angpao_100.png', type: 'gold', godIndex: 4 },
+  { id: 5, name: 'អាំងប៉ាវ 50$', amount: '50$', icon: 'images/angpao_50.png', type: 'god', godIndex: 5 },
+  { id: 6, name: 'អាំងប៉ាវ 100$', amount: '100$', icon: 'images/angpao_100.png', type: 'cash', isGrand: true }
 ];
 
 
